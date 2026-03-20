@@ -1,488 +1,393 @@
 import { useState, useEffect, useRef } from "react";
 import Icon from "@/components/ui/icon";
 
-
-const steps = [
-  {
-    num: "01",
-    color: "#00B8D9",
-    title: "Подтверждение записи",
-    desc: "Заранее подтверждаем запись — родители уверены в дате, времени и специалисте. Снижает процент неявок и позволяет планировать расписание без потерь времени врача.",
-    icon: "CalendarCheck",
-    tag: "Меньше неявок",
-  },
-  {
-    num: "02",
-    color: "#FF6B2B",
-    title: "Презентация врача",
-    desc: "Родителям важно знать, кто будет работать с их ребёнком. Снижает страх, усиливает доверие и повышает вероятность явки и продолжения лечения.",
-    icon: "UserCheck",
-    tag: "Доверие к врачу",
-  },
-  {
-    num: "03",
-    color: "#00C27C",
-    title: "Информационный триггер",
-    desc: "Заранее информируем родителей о необходимости наблюдения у смежного специалиста (ортодонта). Создаём потребность и загружаем смежные направления.",
-    icon: "Bell",
-    tag: "+30% ортодонтия",
-  },
-  {
-    num: "04",
-    color: "#00B8D9",
-    title: "Подготовительный триггер",
-    desc: "Отправляем брендированные мультфильмы с героями клиники. Снижает страх, сокращает время адаптации в кресле и повышает конверсию в успешный первый приём.",
-    icon: "Play",
-    tag: "Меньше страха",
-  },
-  {
-    num: "05",
-    color: "#FF6B2B",
-    title: "Приём и вовлечение",
-    desc: "Игровая механика во время приёма: ребёнок рисует рисунок и получает подарок. Возможность приносить рисунки формирует долгосрочную вовлечённость.",
-    icon: "Palette",
-    tag: "Повторные визиты",
-  },
-  {
-    num: "06",
-    color: "#00C27C",
-    title: "Грамота за смелость",
-    desc: "После лечения ребёнок получает грамоту и похвалу от врача. Закрепляет положительный опыт — ребёнок уходит с гордостью, а не со страхом.",
-    icon: "Award",
-    tag: "Позитивный опыт",
-  },
-  {
-    num: "07",
-    color: "#00B8D9",
-    title: "Фотозона",
-    desc: "После приёма — шуточная фотозона. Родители делятся снимками в соцсетях и становятся амбассадорами клиники. Усиливает доверие и формирует естественный поток.",
-    icon: "Camera",
-    tag: "Соцсети бесплатно",
-  },
-  {
-    num: "08",
-    color: "#FF6B2B",
-    title: "Опрос после приёма",
-    desc: "Через 2 часа — автоматический опрос качества. Негатив перехватывается сразу. Позитив — направляется на агрегаторы для роста рейтинга.",
-    icon: "MessageSquare",
-    tag: "Контроль качества",
-  },
-  {
-    num: "09",
-    color: "#00C27C",
-    title: "Опрос самочувствия",
-    desc: "На следующий день в 12:00 — вопрос о самочувствии ребёнка. Жалобы → мгновенное уведомление администрации. Контролируем восстановление и повышаем доверие.",
-    icon: "HeartPulse",
-    tag: "Забота после",
-  },
-  {
-    num: "10",
-    color: "#00B8D9",
-    title: "День рождения",
-    desc: "В день рождения — интерактивный триггер с выбором подарка. Усиливает вовлечённость семьи, создаёт эмоциональную связь и формирует повод для повторного визита.",
-    icon: "Gift",
-    tag: "Эмоциональная связь",
-  },
-];
-
-const results = [
-  { num: "+2", label: "детских стоматолога\nв штате", color: "#FF6B2B", icon: "UserPlus" },
-  { num: "+30%", label: "загрузка\nортодонта", color: "#00C27C", icon: "TrendingUp" },
-  { num: "+1", label: "ортодонт\nв клинике", color: "#00B8D9", icon: "Star" },
-];
-
-function useInView(threshold = 0.15) {
+const useInView = (threshold = 0.15) => {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
   useEffect(() => {
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) setInView(true); },
-      { threshold }
-    );
-    if (ref.current) obs.observe(ref.current);
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setInView(true); }, { threshold });
+    obs.observe(el);
     return () => obs.disconnect();
-  }, []);
+  }, [threshold]);
   return { ref, inView };
-}
+};
 
-function AnimatedSection({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+const Reveal = ({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) => {
   const { ref, inView } = useInView();
   return (
-    <div
-      ref={ref}
-      className={`transition-all duration-700 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"} ${className}`}
-    >
+    <div ref={ref} className={className} style={{ opacity: inView ? 1 : 0, transform: inView ? "translateY(0)" : "translateY(28px)", transition: `opacity 0.7s ease ${delay}ms, transform 0.7s ease ${delay}ms` }}>
       {children}
     </div>
   );
-}
+};
 
 export default function Index() {
-  const [formData, setFormData] = useState({ name: "", phone: "", clinic: "" });
-  const [sent, setSent] = useState(false);
-  const [count, setCount] = useState(0);
+  const [chosen, setChosen] = useState<number | null>(null);
+  const [step, setStep] = useState<"choose" | "confirm">("choose");
 
-  useEffect(() => {
-    const target = 30;
-    let start = 0;
-    const step = () => {
-      start += 1;
-      setCount(start);
-      if (start < target) setTimeout(step, 40);
-    };
-    setTimeout(step, 800);
-  }, []);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSent(true);
+  const handleChoose = (i: number) => {
+    setChosen(i);
+    setTimeout(() => setStep("confirm"), 400);
   };
 
+  const handleReset = () => { setChosen(null); setStep("choose"); };
+
+  const offers = [
+    { emoji: "🎁", label: "15% на профессиональную гигиену" },
+    { emoji: "🦷", label: "15% на лечение" },
+    { emoji: "⭐️", label: "2 000 бонусов на счёт" },
+  ];
+
   return (
-    <div className="font-golos bg-[#0A1628] min-h-screen overflow-x-hidden">
+    <div className="min-h-screen font-golos" style={{ background: "var(--bg)", color: "var(--text)" }}>
 
-      {/* HERO */}
-      <section className="relative min-h-screen flex flex-col justify-center overflow-hidden px-6 py-20">
-        {/* bg blobs */}
-        <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-[#00B8D9] opacity-10 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/3 pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#FF6B2B] opacity-10 rounded-full blur-[100px] translate-x-1/3 translate-y-1/3 pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 w-[400px] h-[400px] bg-[#00C27C] opacity-5 rounded-full blur-[80px] -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
-
-        {/* grid lines */}
-        <div className="absolute inset-0 opacity-5 pointer-events-none"
-          style={{ backgroundImage: "linear-gradient(#00B8D9 1px, transparent 1px), linear-gradient(90deg, #00B8D9 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
-
-        <div className="max-w-6xl mx-auto w-full">
-          <div className="flex items-center gap-3 mb-8 animate-[fadeSlide_0.6s_ease_forwards]">
-            <div className="h-px w-12 bg-[#FF6B2B]" />
-            <span className="font-oswald text-[#FF6B2B] tracking-[0.3em] text-sm uppercase">Future IT Dent</span>
-          </div>
-
-          <h1 className="font-oswald text-white leading-none mb-6 animate-[fadeSlide_0.8s_ease_forwards]">
-            <span className="block text-5xl md:text-7xl lg:text-8xl font-bold">Как мы увеличили</span>
-            <span className="block text-5xl md:text-7xl lg:text-8xl font-bold text-[#00B8D9]">поток пациентов</span>
-            <span className="block text-5xl md:text-7xl lg:text-8xl font-bold">в детскую</span>
-            <span className="block text-5xl md:text-7xl lg:text-8xl font-bold text-[#FF6B2B]">стоматологию</span>
-          </h1>
-
-          <p className="text-[#8EA5C0] text-xl md:text-2xl max-w-2xl mb-12 leading-relaxed animate-[fadeSlide_1s_ease_forwards]">
-            Без увеличения рекламного бюджета — только за счёт правильно выстроенной системы коммуникаций с семьёй пациента
-          </p>
-
-          <div className="flex flex-wrap gap-6 animate-[fadeSlide_1.2s_ease_forwards]">
-            {results.map((r, i) => (
-              <div key={i} className="flex items-center gap-4 bg-white/5 border border-white/10 rounded-2xl px-6 py-4 backdrop-blur-sm hover:border-white/20 transition-all">
-                <span className="font-oswald text-4xl font-bold" style={{ color: r.color }}>{r.num}</span>
-                <span className="text-white/70 text-sm whitespace-pre-line leading-tight">{r.label}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-16 flex items-center gap-4 animate-[fadeSlide_1.4s_ease_forwards]">
-            <a href="#stages"
-              className="group flex items-center gap-3 bg-[#FF6B2B] text-white font-oswald font-semibold px-8 py-4 rounded-full tracking-wide uppercase hover:bg-[#FF8A4F] transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(255,107,43,0.4)]">
-              Смотреть кейс
-              <Icon name="ArrowDown" size={18} className="group-hover:translate-y-1 transition-transform" />
-            </a>
-            <a href="#form"
-              className="flex items-center gap-3 border border-white/20 text-white font-oswald font-semibold px-8 py-4 rounded-full tracking-wide uppercase hover:border-[#00B8D9] hover:text-[#00B8D9] transition-all">
-              Обсудить проект
-            </a>
-          </div>
+      {/* ───── HERO ───── */}
+      <section className="relative overflow-hidden" style={{ background: "var(--bg)" }}>
+        <div className="absolute inset-0 pointer-events-none">
+          <div style={{ position: "absolute", top: "-10%", right: "-5%", width: 520, height: 520, borderRadius: "50%", background: "radial-gradient(circle, rgba(180,255,220,0.06) 0%, transparent 70%)" }} />
+          <div style={{ position: "absolute", bottom: "5%", left: "-8%", width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(100,180,255,0.05) 0%, transparent 70%)" }} />
+          <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 1, background: "var(--divider)" }} />
         </div>
 
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
-          <span className="text-white text-xs tracking-widest uppercase font-golos">Scroll</span>
-          <div className="w-px h-12 bg-gradient-to-b from-white to-transparent animate-pulse" />
+        <div className="max-w-4xl mx-auto px-6 pt-20 pb-24 relative">
+          <Reveal>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-8" style={{ background: "var(--tag-bg)", color: "var(--accent-green)", border: "1px solid var(--tag-border)" }}>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--accent-green)", display: "inline-block" }} />
+              Кейс · Future Care 360
+            </div>
+          </Reveal>
+
+          <Reveal delay={80}>
+            <h1 className="font-cormorant leading-[1.1] mb-6" style={{ fontSize: "clamp(2.4rem, 6vw, 4.2rem)", color: "var(--text)" }}>
+              Как мы ускорили конверсию<br />
+              <em style={{ color: "var(--accent-green)" }}>вторичных и лояльных пациентов</em><br />
+              в два раза
+            </h1>
+          </Reveal>
+
+          <Reveal delay={160}>
+            <p className="text-lg leading-relaxed max-w-2xl" style={{ color: "var(--muted)" }}>
+              С помощью интерактивных триггеров в Future Care 360 мы сократили путь от сообщения до записи с 12 до 6 месяцев — без скидочных войн и ручной работы.
+            </p>
+          </Reveal>
+
+          <Reveal delay={240}>
+            <div className="grid grid-cols-3 gap-4 mt-14 max-w-xl">
+              {[
+                { val: "×2", sub: "вовлечённость пациентов" },
+                { val: "6 мес", sub: "вместо 12 до конверсии" },
+                { val: "+30–40%", sub: "ожидаемый рост за год" },
+              ].map((m, i) => (
+                <div key={i} className="rounded-2xl p-4 text-center" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
+                  <div className="font-cormorant font-bold leading-none mb-1" style={{ fontSize: "2rem", color: "var(--accent-green)" }}>{m.val}</div>
+                  <div className="text-xs leading-snug" style={{ color: "var(--muted)" }}>{m.sub}</div>
+                </div>
+              ))}
+            </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* ПРОБЛЕМА */}
-      <section className="py-24 px-6">
-        <div className="max-w-6xl mx-auto">
-          <AnimatedSection>
-            <div className="grid md:grid-cols-2 gap-16 items-center">
-              <div>
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="h-px w-8 bg-[#00C27C]" />
-                  <span className="font-oswald text-[#00C27C] tracking-[0.2em] text-sm uppercase">Проблема</span>
+      {/* ───── СТАРЫЙ ПОДХОД ───── */}
+      <section style={{ background: "var(--section-alt)", borderTop: "1px solid var(--divider)", borderBottom: "1px solid var(--divider)" }}>
+        <div className="max-w-4xl mx-auto px-6 py-20">
+          <Reveal>
+            <div className="flex items-center gap-3 mb-10">
+              <span className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "rgba(255,100,80,0.12)", color: "#ff6450" }}>01</span>
+              <h2 className="font-cormorant text-3xl font-semibold" style={{ color: "var(--text)" }}>Как было раньше</h2>
+            </div>
+          </Reveal>
+
+          <div className="grid md:grid-cols-2 gap-8 items-start">
+            <Reveal delay={80}>
+              <p className="text-base leading-relaxed mb-6" style={{ color: "var(--muted)" }}>
+                Через Future Care 360 мы выстраивали стандартные триггеры с напоминанием о профилактическом осмотре. Конверсия достигала хороших значений, но <strong style={{ color: "var(--text)" }}>путь занимал до года</strong>.
+              </p>
+              <p className="text-base leading-relaxed" style={{ color: "var(--muted)" }}>
+                Пациенты долго принимали решение и часто откладывали запись. Классические напоминания работали, но не давали нужной <strong style={{ color: "var(--text)" }}>скорости и глубины вовлечения</strong>.
+              </p>
+            </Reveal>
+
+            <Reveal delay={160}>
+              <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid var(--border)", background: "var(--card)" }}>
+                <div className="px-4 py-3 flex items-center gap-2 border-b" style={{ borderColor: "var(--border)", background: "var(--card-header)" }}>
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "rgba(255,180,60,0.15)", color: "#ffb43c" }}>FS</div>
+                  <div>
+                    <div className="text-xs font-semibold" style={{ color: "var(--text)" }}>Future Smile</div>
+                    <div className="text-xs" style={{ color: "var(--muted)" }}>Стандартное напоминание</div>
+                  </div>
+                  <div className="ml-auto text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(255,100,80,0.1)", color: "#ff6450" }}>Старый формат</div>
                 </div>
-                <h2 className="font-oswald text-white text-4xl md:text-5xl font-bold leading-tight mb-6">
-                  В детской стоматологии<br />
-                  <span className="text-[#00B8D9]">рост зависит не</span><br />
-                  от рекламы
-                </h2>
-                <p className="text-[#8EA5C0] text-lg leading-relaxed">
-                  Рост зависит от правильно выстроенного пути пациента. Мы выстроили систему коммуникаций, которая изменила экономику направления — без увеличения рекламного бюджета.
-                </p>
+                <div className="p-5 text-sm leading-relaxed space-y-3" style={{ color: "var(--text)" }}>
+                  <p>Здравствуйте, Евгения Сергеевна!</p>
+                  <p style={{ color: "var(--muted)" }}>Пора немного позаботиться о себе — прошло больше 6 месяцев с последнего осмотра 🦷</p>
+                  <p style={{ color: "var(--muted)" }}>Профилактическая гигиена помогает сохранить зубы и дёсны здоровыми, а улыбку — свежей ✨</p>
+                  <div className="rounded-xl px-4 py-3 text-sm" style={{ background: "rgba(255,180,60,0.08)", border: "1px solid rgba(255,180,60,0.2)", color: "#ffb43c" }}>
+                    Только сейчас — дополнительная скидка 10% на профессиональную чистку в течение 15 дней.
+                  </div>
+                  <p style={{ color: "var(--muted)" }}>💬 Запишитесь на удобное время — ответьте на это сообщение</p>
+                  <p className="text-xs" style={{ color: "var(--muted)", opacity: 0.6 }}>👉 futuresmile-clinic.ru/pamyatka-gigiena</p>
+                </div>
+                <div className="px-5 py-4 border-t" style={{ borderColor: "var(--border)", background: "var(--card-header)" }}>
+                  <div className="flex gap-4 text-xs" style={{ color: "var(--muted)" }}>
+                    <span>Вторичные: <strong style={{ color: "#ff6450" }}>40%</strong></span>
+                    <span>Лояльные: <strong style={{ color: "#ff6450" }}>60%</strong></span>
+                    <span style={{ marginLeft: "auto" }}>⏱ до 12 месяцев</span>
+                  </div>
+                </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                {[
-                  { icon: "Heart", text: "Доверие родителей", color: "#FF6B2B" },
-                  { icon: "Smile", text: "Эмоции ребёнка", color: "#00B8D9" },
-                  { icon: "Star", text: "Первый опыт", color: "#00C27C" },
-                  { icon: "RefreshCw", text: "Повторные визиты", color: "#FF6B2B" },
-                ].map((item, i) => (
-                  <div key={i}
-                    className="bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col gap-3 hover:bg-white/8 transition-all hover:-translate-y-1">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: item.color + "20" }}>
-                      <Icon name={item.icon} size={22} style={{ color: item.color }} />
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* ───── ГИПОТЕЗА ───── */}
+      <section style={{ background: "var(--bg)", borderBottom: "1px solid var(--divider)" }}>
+        <div className="max-w-4xl mx-auto px-6 py-20">
+          <Reveal>
+            <div className="flex items-center gap-3 mb-10">
+              <span className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "rgba(100,180,255,0.12)", color: "#64b4ff" }}>02</span>
+              <h2 className="font-cormorant text-3xl font-semibold" style={{ color: "var(--text)" }}>Гипотеза</h2>
+            </div>
+          </Reveal>
+
+          <Reveal delay={80}>
+            <div className="rounded-2xl p-8 relative overflow-hidden" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
+              <div style={{ position: "absolute", top: 0, right: 0, width: 200, height: 200, background: "radial-gradient(circle at top right, rgba(100,180,255,0.08), transparent 70%)", pointerEvents: "none" }} />
+              <p className="font-cormorant text-2xl leading-relaxed mb-4" style={{ color: "var(--text)", fontStyle: "italic" }}>
+                «Проблема не в самом предложении, а в формате коммуникации»
+              </p>
+              <p className="text-base leading-relaxed" style={{ color: "var(--muted)" }}>
+                Если дать пациенту <strong style={{ color: "var(--accent-green)" }}>выбор</strong> и вовлечь его в диалог — решение будет приниматься быстрее. Пассивное чтение уступает место активному действию.
+              </p>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ───── ИНТЕРАКТИВНЫЙ ДЕМО-ТРИГГЕР ───── */}
+      <section style={{ background: "var(--section-alt)", borderBottom: "1px solid var(--divider)" }}>
+        <div className="max-w-4xl mx-auto px-6 py-20">
+          <Reveal>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "rgba(180,255,180,0.12)", color: "var(--accent-green)" }}>03</span>
+              <h2 className="font-cormorant text-3xl font-semibold" style={{ color: "var(--text)" }}>Новый формат: попробуйте сами</h2>
+            </div>
+          </Reveal>
+          <Reveal delay={60}>
+            <p className="text-base mb-10" style={{ color: "var(--muted)" }}>
+              Именно так выглядит интерактивный триггер для пациента. Нажмите на один из вариантов.
+            </p>
+          </Reveal>
+
+          <div className="grid md:grid-cols-2 gap-8 items-start">
+            <Reveal delay={120}>
+              <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid var(--border)", background: "var(--card)" }}>
+                <div className="px-4 py-3 flex items-center gap-2 border-b" style={{ borderColor: "var(--border)", background: "var(--card-header)" }}>
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "rgba(120,220,140,0.15)", color: "var(--accent-green)" }}>FS</div>
+                  <div>
+                    <div className="text-xs font-semibold" style={{ color: "var(--text)" }}>Future Smile</div>
+                    <div className="text-xs" style={{ color: "var(--muted)" }}>Интерактивный триггер</div>
+                  </div>
+                  <div className="ml-auto text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(120,220,140,0.12)", color: "var(--accent-green)" }}>Новый формат</div>
+                </div>
+                <div className="p-5 text-sm leading-relaxed" style={{ color: "var(--text)" }}>
+                  <p className="mb-4" style={{ color: "var(--muted)" }}>Здравствуйте, Евгения Сергеевна! Мы подготовили для вас специальное предложение. Выберите, что вам сейчас актуально:</p>
+
+                  {step === "choose" && (
+                    <div className="space-y-2">
+                      {offers.map((o, i) => (
+                        <button key={i} onClick={() => handleChoose(i)}
+                          className="w-full text-left rounded-xl px-4 py-3 text-sm flex items-center gap-3"
+                          style={{
+                            background: chosen === i ? "rgba(120,220,140,0.18)" : "var(--offer-bg)",
+                            border: chosen === i ? "1.5px solid var(--accent-green)" : "1.5px solid var(--border)",
+                            color: "var(--text)",
+                            cursor: "pointer",
+                            transform: chosen === i ? "scale(1.02)" : "scale(1)",
+                            transition: "all 0.2s ease",
+                          }}>
+                          <span style={{ fontSize: "1.2rem" }}>{o.emoji}</span>
+                          <span>{o.label}</span>
+                        </button>
+                      ))}
                     </div>
-                    <span className="text-white font-golos font-medium">{item.text}</span>
+                  )}
+
+                  {step === "confirm" && chosen !== null && (
+                    <div>
+                      <div className="rounded-xl px-4 py-4 mb-4 text-sm" style={{ background: "rgba(120,220,140,0.1)", border: "1.5px solid var(--accent-green)" }}>
+                        <div className="font-semibold mb-1" style={{ color: "var(--accent-green)" }}>Отличный выбор! {offers[chosen].emoji}</div>
+                        <div style={{ color: "var(--muted)" }}>{offers[chosen].label} — мы уже готовим для вас запись. Наш администратор свяжется в ближайшее время.</div>
+                      </div>
+                      <button onClick={handleReset} style={{ color: "var(--muted)", background: "none", border: "none", cursor: "pointer", textDecoration: "underline", fontSize: "0.75rem" }}>
+                        ← Попробовать снова
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Reveal>
+
+            <Reveal delay={200}>
+              <div className="space-y-4">
+                {[
+                  { num: "1", title: "Выбор вместо давления", text: "Пациент чувствует контроль над решением, а не получает директиву.", color: "var(--accent-green)" },
+                  { num: "2", title: "Мгновенное вовлечение", text: "Ответить на кнопку проще, чем обдумывать запись самостоятельно.", color: "#64b4ff" },
+                  { num: "3", title: "Меньше когнитивной нагрузки", text: "Мы убрали необходимость «решать самому» что именно нужно.", color: "#ffb43c" },
+                ].map((f, i) => (
+                  <div key={i} className="rounded-xl p-5 flex gap-4" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
+                    <span className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold" style={{ background: f.color + "18", color: f.color }}>{f.num}</span>
+                    <div>
+                      <div className="font-semibold text-sm mb-1" style={{ color: "var(--text)" }}>{f.title}</div>
+                      <div className="text-sm" style={{ color: "var(--muted)" }}>{f.text}</div>
+                    </div>
                   </div>
                 ))}
               </div>
-            </div>
-          </AnimatedSection>
-        </div>
-      </section>
-
-      {/* ФОТО / ПРИМЕРЫ */}
-      <section className="py-24 px-6 bg-white/[0.02]" id="photos">
-        <div className="max-w-6xl mx-auto">
-          <AnimatedSection>
-            <div className="text-center mb-16">
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <div className="h-px w-8 bg-[#FF6B2B]" />
-                <span className="font-oswald text-[#FF6B2B] tracking-[0.2em] text-sm uppercase">Атмосфера клиники</span>
-                <div className="h-px w-8 bg-[#FF6B2B]" />
-              </div>
-              <h2 className="font-oswald text-white text-4xl md:text-5xl font-bold">
-                Среда, которая<br /><span className="text-[#00B8D9]">создаёт доверие</span>
-              </h2>
-            </div>
-          </AnimatedSection>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {[
-              { label: "Приём с рисунком", color: "#00B8D9", icon: "Palette", aspect: "row-span-2" },
-              { label: "Грамота за смелость", color: "#FF6B2B", icon: "Award", aspect: "" },
-              { label: "Подарок от клиники", color: "#00C27C", icon: "Gift", aspect: "" },
-              { label: "Фотозона", color: "#FF6B2B", icon: "Camera", aspect: "" },
-              { label: "Игровая зона", color: "#00B8D9", icon: "Gamepad2", aspect: "" },
-            ].map((item, i) => (
-              <AnimatedSection key={i}>
-                <div className={`relative rounded-2xl overflow-hidden border border-white/10 hover:border-white/25 transition-all hover:-translate-y-1 cursor-pointer group ${item.aspect}`}
-                  style={{ background: `linear-gradient(135deg, ${item.color}15, ${item.color}05)`, minHeight: i === 0 ? "320px" : "150px" }}>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                    <div className="w-16 h-16 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110"
-                      style={{ backgroundColor: item.color + "25" }}>
-                      <Icon name={item.icon} size={32} style={{ color: item.color }} />
-                    </div>
-                    <span className="text-white/60 text-sm font-golos text-center px-4">{item.label}</span>
-                    <span className="text-white/30 text-xs">Фото появится здесь</span>
-                  </div>
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-t from-black/30 to-transparent" />
-                </div>
-              </AnimatedSection>
-            ))}
+            </Reveal>
           </div>
         </div>
       </section>
 
-      {/* ЭТАПЫ */}
-      <section className="py-24 px-6" id="stages">
-        <div className="max-w-6xl mx-auto">
-          <AnimatedSection>
-            <div className="text-center mb-20">
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <div className="h-px w-8 bg-[#00C27C]" />
-                <span className="font-oswald text-[#00C27C] tracking-[0.2em] text-sm uppercase">Система</span>
-                <div className="h-px w-8 bg-[#00C27C]" />
-              </div>
-              <h2 className="font-oswald text-white text-4xl md:text-5xl font-bold mb-4">
-                10 этапов<br /><span className="text-[#FF6B2B]">сопровождения пациента</span>
-              </h2>
-              <p className="text-[#8EA5C0] text-lg max-w-xl mx-auto">
-                Управляем не визитом — а всем сценарием взаимодействия с семьёй пациента
-              </p>
+      {/* ───── РЕЗУЛЬТАТЫ ───── */}
+      <section style={{ background: "var(--bg)", borderBottom: "1px solid var(--divider)" }}>
+        <div className="max-w-4xl mx-auto px-6 py-20">
+          <Reveal>
+            <div className="flex items-center gap-3 mb-10">
+              <span className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "rgba(255,180,60,0.12)", color: "#ffb43c" }}>04</span>
+              <h2 className="font-cormorant text-3xl font-semibold" style={{ color: "var(--text)" }}>Результаты</h2>
             </div>
-          </AnimatedSection>
+          </Reveal>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            {steps.map((step, i) => (
-              <AnimatedSection key={i}>
-                <div
-                  className="group relative bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-white/20 hover:-translate-y-1 transition-all duration-300 cursor-pointer overflow-hidden"
-                  style={{ transitionDelay: `${(i % 2) * 80}ms` }}
-                >
-                  <div className="absolute top-0 left-0 w-1 h-full rounded-l-2xl" style={{ backgroundColor: step.color }} />
-                  <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full opacity-10 blur-xl pointer-events-none"
-                    style={{ backgroundColor: step.color }} />
-
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0">
-                      <span className="font-oswald text-5xl font-bold opacity-15 leading-none" style={{ color: step.color }}>
-                        {step.num}
-                      </span>
+          <Reveal delay={80}>
+            <div className="rounded-2xl overflow-hidden mb-10" style={{ border: "1px solid var(--border)" }}>
+              <div className="grid grid-cols-2">
+                <div className="p-6" style={{ background: "rgba(255,100,80,0.04)", borderRight: "1px solid var(--border)" }}>
+                  <div className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: "#ff6450" }}>До</div>
+                  <div className="space-y-3 text-sm" style={{ color: "var(--muted)" }}>
+                    <div className="flex items-start gap-2">
+                      <Icon name="Clock" size={14} style={{ color: "#ff6450", marginTop: 2, flexShrink: 0 }} />
+                      <span>Конверсия 40/60% достигалась за <strong style={{ color: "var(--text)" }}>12 месяцев</strong></span>
                     </div>
-                    <div className="flex-1 pt-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: step.color + "20" }}>
-                          <Icon name={step.icon} size={16} style={{ color: step.color }} />
-                        </div>
-                        <span className="text-xs font-golos font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: step.color + "20", color: step.color }}>
-                          {step.tag}
-                        </span>
-                      </div>
-                      <h3 className="font-oswald text-white text-xl font-semibold mb-2">{step.title}</h3>
-                      <p className="text-[#8EA5C0] text-sm leading-relaxed">{step.desc}</p>
+                    <div className="flex items-start gap-2">
+                      <Icon name="TrendingDown" size={14} style={{ color: "#ff6450", marginTop: 2, flexShrink: 0 }} />
+                      <span>Медленное принятие решений</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <Icon name="MessageSquare" size={14} style={{ color: "#ff6450", marginTop: 2, flexShrink: 0 }} />
+                      <span>Пассивная коммуникация</span>
                     </div>
                   </div>
                 </div>
-              </AnimatedSection>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ИТОГ */}
-      <section className="py-24 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-[#00B8D9] opacity-8 rounded-full blur-[100px]" />
-          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-[#FF6B2B] opacity-8 rounded-full blur-[100px]" />
-        </div>
-
-        <div className="max-w-6xl mx-auto relative">
-          <AnimatedSection>
-            <div className="text-center mb-16">
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <div className="h-px w-8 bg-[#FF6B2B]" />
-                <span className="font-oswald text-[#FF6B2B] tracking-[0.2em] text-sm uppercase">Итог Future IT Dent</span>
-                <div className="h-px w-8 bg-[#FF6B2B]" />
-              </div>
-              <h2 className="font-oswald text-white text-4xl md:text-5xl font-bold mb-6">
-                Правильная коммуникация —<br /><span className="text-[#00C27C]">это рост клиники</span>
-              </h2>
-              <p className="text-[#8EA5C0] text-lg max-w-2xl mx-auto">
-                Комплексная система триггеров и вовлечения позволила значительно увеличить поток на детский приём без увеличения рекламного бюджета
-              </p>
-            </div>
-          </AnimatedSection>
-
-          <div className="grid md:grid-cols-3 gap-6 mb-16">
-            {results.map((r, i) => (
-              <AnimatedSection key={i}>
-                <div className="relative bg-white/5 border border-white/10 rounded-3xl p-8 text-center hover:border-white/20 transition-all hover:-translate-y-2 group overflow-hidden">
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl"
-                    style={{ background: `radial-gradient(circle at center, ${r.color}10, transparent 70%)` }} />
-                  <div className="relative">
-                    <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: r.color + "20" }}>
-                      <Icon name={r.icon} size={28} style={{ color: r.color }} />
+                <div className="p-6" style={{ background: "rgba(120,220,140,0.04)" }}>
+                  <div className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: "var(--accent-green)" }}>После</div>
+                  <div className="space-y-3 text-sm" style={{ color: "var(--muted)" }}>
+                    <div className="flex items-start gap-2">
+                      <Icon name="Zap" size={14} style={{ color: "var(--accent-green)", marginTop: 2, flexShrink: 0 }} />
+                      <span>Та же конверсия за <strong style={{ color: "var(--text)" }}>6 месяцев</strong></span>
                     </div>
-                    <div className="font-oswald text-6xl font-bold mb-3" style={{ color: r.color }}>{r.num}</div>
-                    <div className="text-white/70 font-golos whitespace-pre-line leading-snug">{r.label}</div>
+                    <div className="flex items-start gap-2">
+                      <Icon name="TrendingUp" size={14} style={{ color: "var(--accent-green)", marginTop: 2, flexShrink: 0 }} />
+                      <span>Вовлечённость выросла в <strong style={{ color: "var(--text)" }}>2 раза</strong></span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <Icon name="MousePointerClick" size={14} style={{ color: "var(--accent-green)", marginTop: 2, flexShrink: 0 }} />
+                      <span>Пациент сам инициирует диалог</span>
+                    </div>
                   </div>
                 </div>
-              </AnimatedSection>
-            ))}
-          </div>
-
-          <AnimatedSection>
-            <div className="bg-gradient-to-r from-[#00B8D9]/10 via-white/5 to-[#FF6B2B]/10 border border-white/10 rounded-3xl p-8 md:p-12 text-center">
-              <p className="font-oswald text-white text-2xl md:text-3xl font-semibold leading-relaxed">
-                Таким образом, правильно выстроенная коммуникация и сценарий сопровождения пациента{" "}
-                <span className="text-[#00C27C]">напрямую повлияли на рост клиники</span> и расширение команды
-              </p>
-            </div>
-          </AnimatedSection>
-        </div>
-      </section>
-
-      {/* ФОРМА */}
-      <section className="py-24 px-6 bg-white/[0.02]" id="form">
-        <div className="max-w-xl mx-auto">
-          <AnimatedSection>
-            <div className="text-center mb-12">
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <div className="h-px w-8 bg-[#00B8D9]" />
-                <span className="font-oswald text-[#00B8D9] tracking-[0.2em] text-sm uppercase">Начать</span>
-                <div className="h-px w-8 bg-[#00B8D9]" />
               </div>
-              <h2 className="font-oswald text-white text-4xl md:text-5xl font-bold mb-4">
-                Хотите такой же<br /><span className="text-[#FF6B2B]">результат?</span>
-              </h2>
-              <p className="text-[#8EA5C0] text-lg">
-                Оставьте заявку — разберём вашу клинику и предложим систему коммуникаций
-              </p>
+              <div className="px-6 py-5" style={{ borderTop: "1px solid var(--border)", background: "var(--card)" }}>
+                <div className="text-xs mb-3" style={{ color: "var(--muted)" }}>Скорость достижения конверсии 40% / 60%</div>
+                <div className="flex items-center gap-3">
+                  <span className="text-xs w-20 text-right" style={{ color: "var(--muted)" }}>Раньше</span>
+                  <div className="flex-1 h-2 rounded-full" style={{ background: "var(--bar-bg)" }}>
+                    <div className="h-2 rounded-full" style={{ width: "100%", background: "#ff6450" }} />
+                  </div>
+                  <span className="text-xs w-12" style={{ color: "#ff6450" }}>12 мес</span>
+                </div>
+                <div className="flex items-center gap-3 mt-2">
+                  <span className="text-xs w-20 text-right" style={{ color: "var(--muted)" }}>Сейчас</span>
+                  <div className="flex-1 h-2 rounded-full" style={{ background: "var(--bar-bg)" }}>
+                    <div className="h-2 rounded-full" style={{ width: "50%", background: "var(--accent-green)" }} />
+                  </div>
+                  <span className="text-xs w-12" style={{ color: "var(--accent-green)" }}>6 мес</span>
+                </div>
+              </div>
             </div>
-          </AnimatedSection>
+          </Reveal>
 
-          <AnimatedSection>
-            {!sent ? (
-              <form onSubmit={handleSubmit} className="bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col gap-5">
-                <div className="flex flex-col gap-2">
-                  <label className="text-white/60 text-sm font-golos">Ваше имя</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Иван Иванов"
-                    value={formData.name}
-                    onChange={e => setFormData(p => ({ ...p, name: e.target.value }))}
-                    className="bg-white/8 border border-white/15 rounded-xl px-4 py-3 text-white placeholder-white/30 font-golos focus:outline-none focus:border-[#00B8D9] transition-colors"
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label className="text-white/60 text-sm font-golos">Телефон</label>
-                  <input
-                    type="tel"
-                    required
-                    placeholder="+7 (999) 000-00-00"
-                    value={formData.phone}
-                    onChange={e => setFormData(p => ({ ...p, phone: e.target.value }))}
-                    className="bg-white/8 border border-white/15 rounded-xl px-4 py-3 text-white placeholder-white/30 font-golos focus:outline-none focus:border-[#00B8D9] transition-colors"
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label className="text-white/60 text-sm font-golos">Название клиники</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Клиника Улыбка"
-                    value={formData.clinic}
-                    onChange={e => setFormData(p => ({ ...p, clinic: e.target.value }))}
-                    className="bg-white/8 border border-white/15 rounded-xl px-4 py-3 text-white placeholder-white/30 font-golos focus:outline-none focus:border-[#00B8D9] transition-colors"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="bg-[#FF6B2B] text-white font-oswald font-semibold py-4 rounded-xl tracking-wide uppercase hover:bg-[#FF8A4F] transition-all hover:scale-[1.02] active:scale-95 shadow-[0_0_30px_rgba(255,107,43,0.35)] mt-2"
-                >
-                  Получить консультацию
-                </button>
-                <p className="text-white/30 text-xs text-center font-golos">
-                  Нажимая кнопку, вы соглашаетесь с обработкой персональных данных
+          <Reveal delay={160}>
+            <div className="rounded-2xl p-6 flex items-start gap-5" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
+              <Icon name="TrendingUp" size={32} style={{ color: "#ffb43c", flexShrink: 0, marginTop: 2 }} />
+              <div>
+                <div className="font-semibold text-base mb-1" style={{ color: "var(--text)" }}>Прогноз на годовом горизонте</div>
+                <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
+                  Наблюдение продолжается. По текущей динамике мы ожидаем рост конверсии ещё на <strong style={{ color: "#ffb43c" }}>30–40%</strong> по сравнению с классическими триггерами.
                 </p>
-              </form>
-            ) : (
-              <div className="bg-white/5 border border-[#00C27C]/30 rounded-3xl p-12 text-center">
-                <div className="w-20 h-20 rounded-full bg-[#00C27C]/20 flex items-center justify-center mx-auto mb-6">
-                  <Icon name="CheckCircle" size={40} style={{ color: "#00C27C" }} />
-                </div>
-                <h3 className="font-oswald text-white text-3xl font-bold mb-3">Заявка принята!</h3>
-                <p className="text-[#8EA5C0] font-golos">Мы свяжемся с вами в течение рабочего дня</p>
               </div>
-            )}
-          </AnimatedSection>
+            </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="py-8 px-6 border-t border-white/5">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <span className="font-oswald text-white/40 text-sm tracking-widest uppercase">Future IT Dent</span>
-          <span className="text-white/20 text-sm font-golos">© 2026 Все права защищены</span>
-        </div>
-      </footer>
+      {/* ───── ВЫВОД ───── */}
+      <section style={{ background: "var(--section-alt)" }}>
+        <div className="max-w-4xl mx-auto px-6 py-20">
+          <Reveal>
+            <div className="flex items-center gap-3 mb-10">
+              <span className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "rgba(120,220,140,0.12)", color: "var(--accent-green)" }}>05</span>
+              <h2 className="font-cormorant text-3xl font-semibold" style={{ color: "var(--text)" }}>Вывод</h2>
+            </div>
+          </Reveal>
 
-      <style>{`
-        @keyframes fadeSlide {
-          from { opacity: 0; transform: translateY(24px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .font-oswald { font-family: 'Oswald', sans-serif; }
-        .font-golos { font-family: 'Golos Text', sans-serif; }
-      `}</style>
+          <Reveal delay={80}>
+            <p className="font-cormorant text-2xl leading-relaxed mb-8" style={{ color: "var(--text)", fontStyle: "italic" }}>
+              «Вторичные и лояльные пациенты — это не просто база, а аудитория, с которой важно{" "}
+              <em style={{ color: "var(--accent-green)" }}>разговаривать</em>, а не рассылать напоминания»
+            </p>
+          </Reveal>
+
+          <Reveal delay={140}>
+            <div className="grid sm:grid-cols-3 gap-4 mb-12">
+              {[
+                { icon: "Zap", text: "Ускорить принятие решения", color: "var(--accent-green)" },
+                { icon: "Users", text: "Повысить вовлечённость", color: "#64b4ff" },
+                { icon: "TrendingUp", text: "Увеличить конверсию без скидочных войн", color: "#ffb43c" },
+              ].map((item, i) => (
+                <div key={i} className="rounded-xl p-5 flex flex-col items-start gap-3" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
+                  <Icon name={item.icon} size={20} style={{ color: item.color }} />
+                  <span className="text-sm leading-snug" style={{ color: "var(--text)" }}>{item.text}</span>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+
+          <Reveal delay={200}>
+            <div className="rounded-2xl p-8 text-center" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
+              <div className="font-cormorant text-2xl font-semibold mb-2" style={{ color: "var(--text)" }}>
+                Хотите внедрить интерактивные триггеры?
+              </div>
+              <p className="text-sm mb-6" style={{ color: "var(--muted)" }}>
+                Обсудим вашу ситуацию и подберём сценарии под вашу клинику
+              </p>
+              <button className="px-8 py-3 rounded-full font-semibold text-sm" style={{ background: "var(--accent-green)", color: "#0a1a0e", cursor: "pointer", border: "none" }}>
+                Связаться с нами
+              </button>
+            </div>
+          </Reveal>
+
+          <Reveal delay={260}>
+            <div className="mt-14 pt-8 flex items-center justify-between" style={{ borderTop: "1px solid var(--divider)" }}>
+              <div className="font-cormorant text-lg font-semibold" style={{ color: "var(--text)" }}>Future Care 360</div>
+              <div className="text-xs" style={{ color: "var(--muted)" }}>futuresmile-clinic.ru</div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
     </div>
   );
 }

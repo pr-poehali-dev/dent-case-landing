@@ -19,7 +19,7 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				oswald: ['Oswald', 'sans-serif'],
+				cormorant: ['Cormorant Garamond', 'Georgia', 'serif'],
 				golos: ['Golos Text', 'sans-serif'],
 			},
 			colors: {
