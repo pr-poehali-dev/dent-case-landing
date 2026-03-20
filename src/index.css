@@ -5,14 +5,14 @@
 @layer base {
   :root {
     /* Case page tokens */
-    --bg: #f7f6f2;
+    --bg: #eceae3;
     --text: #1a1a1a;
     --muted: #7a7a72;
-    --card: #ffffff;
-    --card-header: #f2f1ed;
-    --border: rgba(0, 0, 0, 0.08);
-    --divider: rgba(0, 0, 0, 0.07);
-    --section-alt: #efede7;
+    --card: #f5f3ee;
+    --card-header: #e8e5de;
+    --border: rgba(0, 0, 0, 0.09);
+    --divider: rgba(0, 0, 0, 0.08);
+    --section-alt: #e2dfd7;
     --accent-green: #1a7a3c;
     --tag-bg: rgba(26, 122, 60, 0.07);
     --tag-border: rgba(26, 122, 60, 0.18);
