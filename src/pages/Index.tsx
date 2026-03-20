@@ -60,7 +60,7 @@ export default function Index() {
           </Reveal>
 
           <Reveal delay={80}>
-            <h1 className="font-cormorant leading-[1.1] mb-6" style={{ fontSize: "clamp(2.4rem, 6vw, 4.2rem)", color: "var(--text)" }}>
+            <h1 className="font-oswald leading-[1.1] mb-6" style={{ fontSize: "clamp(2.4rem, 6vw, 4.2rem)", color: "var(--text)", fontWeight: 600 }}>
               Как мы ускорили конверсию<br />
               <em style={{ color: "var(--accent-green)" }}>вторичных и лояльных пациентов</em><br />
               в два раза
@@ -81,7 +81,7 @@ export default function Index() {
                 { val: "+30–40%", sub: "ожидаемый рост за год" },
               ].map((m, i) => (
                 <div key={i} className="rounded-2xl p-4 text-center" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
-                  <div className="font-cormorant font-bold leading-none mb-1" style={{ fontSize: "2rem", color: "var(--accent-green)" }}>{m.val}</div>
+                  <div className="font-oswald font-bold leading-none mb-1" style={{ fontSize: "2rem", color: "var(--accent-green)" }}>{m.val}</div>
                   <div className="text-xs leading-snug" style={{ color: "var(--muted)" }}>{m.sub}</div>
                 </div>
               ))}
@@ -96,7 +96,7 @@ export default function Index() {
           <Reveal>
             <div className="flex items-center gap-3 mb-10">
               <span className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "rgba(255,100,80,0.12)", color: "#ff6450" }}>01</span>
-              <h2 className="font-cormorant text-3xl font-semibold" style={{ color: "var(--text)" }}>Как было раньше</h2>
+              <h2 className="font-oswald text-3xl font-semibold" style={{ color: "var(--text)" }}>Как было раньше</h2>
             </div>
           </Reveal>
 
@@ -149,14 +149,14 @@ export default function Index() {
           <Reveal>
             <div className="flex items-center gap-3 mb-10">
               <span className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "rgba(100,180,255,0.12)", color: "#64b4ff" }}>02</span>
-              <h2 className="font-cormorant text-3xl font-semibold" style={{ color: "var(--text)" }}>Гипотеза</h2>
+              <h2 className="font-oswald text-3xl font-semibold" style={{ color: "var(--text)" }}>Гипотеза</h2>
             </div>
           </Reveal>
 
           <Reveal delay={80}>
             <div className="rounded-2xl p-8 relative overflow-hidden" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
               <div style={{ position: "absolute", top: 0, right: 0, width: 200, height: 200, background: "radial-gradient(circle at top right, rgba(100,180,255,0.08), transparent 70%)", pointerEvents: "none" }} />
-              <p className="font-cormorant text-2xl leading-relaxed mb-4" style={{ color: "var(--text)", fontStyle: "italic" }}>
+              <p className="font-oswald text-2xl leading-relaxed mb-4" style={{ color: "var(--text)", fontWeight: 500 }}>
                 «Проблема не в самом предложении, а в формате коммуникации»
               </p>
               <p className="text-base leading-relaxed" style={{ color: "var(--muted)" }}>
@@ -173,7 +173,7 @@ export default function Index() {
           <Reveal>
             <div className="flex items-center gap-3 mb-4">
               <span className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "rgba(180,255,180,0.12)", color: "var(--accent-green)" }}>03</span>
-              <h2 className="font-cormorant text-3xl font-semibold" style={{ color: "var(--text)" }}>Новый формат: попробуйте сами</h2>
+              <h2 className="font-oswald text-3xl font-semibold" style={{ color: "var(--text)" }}>Новый формат: попробуйте сами</h2>
             </div>
           </Reveal>
           <Reveal delay={60}>
@@ -258,7 +258,7 @@ export default function Index() {
           <Reveal>
             <div className="flex items-center gap-3 mb-10">
               <span className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "rgba(255,180,60,0.12)", color: "#ffb43c" }}>04</span>
-              <h2 className="font-cormorant text-3xl font-semibold" style={{ color: "var(--text)" }}>Результаты</h2>
+              <h2 className="font-oswald text-3xl font-semibold" style={{ color: "var(--text)" }}>Результаты</h2>
             </div>
           </Reveal>
 
@@ -340,14 +340,14 @@ export default function Index() {
           <Reveal>
             <div className="flex items-center gap-3 mb-10">
               <span className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "rgba(120,220,140,0.12)", color: "var(--accent-green)" }}>05</span>
-              <h2 className="font-cormorant text-3xl font-semibold" style={{ color: "var(--text)" }}>Вывод</h2>
+              <h2 className="font-oswald text-3xl font-semibold" style={{ color: "var(--text)" }}>Вывод</h2>
             </div>
           </Reveal>
 
           <Reveal delay={80}>
-            <p className="font-cormorant text-2xl leading-relaxed mb-8" style={{ color: "var(--text)", fontStyle: "italic" }}>
+            <p className="font-oswald text-2xl leading-relaxed mb-8" style={{ color: "var(--text)", fontWeight: 500 }}>
               «Вторичные и лояльные пациенты — это не просто база, а аудитория, с которой важно{" "}
-              <em style={{ color: "var(--accent-green)" }}>разговаривать</em>, а не рассылать напоминания»
+              <span style={{ color: "var(--accent-green)" }}>разговаривать</span>, а не рассылать напоминания»
             </p>
           </Reveal>
 
@@ -368,7 +368,7 @@ export default function Index() {
 
           <Reveal delay={200}>
             <div className="rounded-2xl p-8 text-center" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
-              <div className="font-cormorant text-2xl font-semibold mb-2" style={{ color: "var(--text)" }}>
+              <div className="font-oswald text-2xl font-semibold mb-2" style={{ color: "var(--text)" }}>
                 Хотите внедрить интерактивные триггеры?
               </div>
               <p className="text-sm mb-6" style={{ color: "var(--muted)" }}>
@@ -382,7 +382,7 @@ export default function Index() {
 
           <Reveal delay={260}>
             <div className="mt-14 pt-8 flex items-center justify-between" style={{ borderTop: "1px solid var(--divider)" }}>
-              <div className="font-cormorant text-lg font-semibold" style={{ color: "var(--text)" }}>Future Care 360</div>
+              <div className="font-oswald text-lg font-semibold" style={{ color: "var(--text)" }}>Future Care 360</div>
               <div className="text-xs" style={{ color: "var(--muted)" }}>futuresmile-clinic.ru</div>
             </div>
           </Reveal>
