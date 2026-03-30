@@ -60,12 +60,12 @@ export default function Index() {
           <Reveal delay={240}>
             <div className="grid grid-cols-3 gap-4 mt-14 max-w-xl">
               {[
-                { val: "×2", sub: "вовлечённость пациентов" },
-                { val: "6 мес", sub: "вместо 12 до конверсии" },
-                { val: "+30–40%", sub: "ожидаемый рост за год" },
+                { val: "×2", sub: "вовлечённость пациентов", color: "var(--accent-green)", glow: "rgba(45,216,130,0.12)" },
+                { val: "6 мес", sub: "вместо 12 до конверсии", color: "var(--accent-blue)", glow: "rgba(74,168,255,0.12)" },
+                { val: "+30–40%", sub: "ожидаемый рост за год", color: "var(--accent-navy)", glow: "rgba(107,140,255,0.12)" },
               ].map((m, i) => (
-                <div key={i} className="rounded-2xl p-4 text-center" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
-                  <div className="font-cormorant font-bold leading-none mb-1" style={{ fontSize: "2rem", color: "var(--accent-green)" }}>{m.val}</div>
+                <div key={i} className="rounded-2xl p-4 text-center" style={{ background: m.glow, border: `1.5px solid ${m.color}30` }}>
+                  <div className="font-cormorant font-bold leading-none mb-1" style={{ fontSize: "2rem", color: m.color }}>{m.val}</div>
                   <div className="text-xs leading-snug" style={{ color: "var(--muted)" }}>{m.sub}</div>
                 </div>
               ))}
@@ -95,26 +95,26 @@ export default function Index() {
             </Reveal>
 
             <Reveal delay={160}>
-              <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid var(--border)", background: "var(--card)" }}>
-                <div className="px-4 py-3 flex items-center gap-2 border-b" style={{ borderColor: "var(--border)", background: "var(--card-header)" }}>
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "rgba(255,180,60,0.15)", color: "#ffb43c" }}>FS</div>
+              <div className="rounded-2xl overflow-hidden" style={{ border: "1.5px solid rgba(255,100,80,0.25)", background: "var(--card)" }}>
+                <div className="px-4 py-3 flex items-center gap-2 border-b" style={{ borderColor: "rgba(255,100,80,0.15)", background: "rgba(255,100,80,0.06)" }}>
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "rgba(255,100,80,0.15)", color: "#ff6450" }}>FS</div>
                   <div>
                     <div className="text-xs font-semibold" style={{ color: "var(--text)" }}>Future Smile</div>
                     <div className="text-xs" style={{ color: "var(--muted)" }}>Стандартное напоминание</div>
                   </div>
-                  <div className="ml-auto text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(255,100,80,0.1)", color: "#ff6450" }}>Старый формат</div>
+                  <div className="ml-auto text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(255,100,80,0.15)", color: "#ff6450" }}>Старый формат</div>
                 </div>
                 <div className="p-5 text-sm leading-relaxed space-y-3" style={{ color: "var(--text)" }}>
                   <p>Здравствуйте, Евгения Сергеевна!</p>
                   <p style={{ color: "var(--muted)" }}>Пора немного позаботиться о себе — прошло больше 6 месяцев с последнего осмотра 🦷</p>
                   <p style={{ color: "var(--muted)" }}>Профилактическая гигиена помогает сохранить зубы и дёсны здоровыми, а улыбку — свежей ✨</p>
-                  <div className="rounded-xl px-4 py-3 text-sm" style={{ background: "rgba(255,180,60,0.08)", border: "1px solid rgba(255,180,60,0.2)", color: "#ffb43c" }}>
+                  <div className="rounded-xl px-4 py-3 text-sm" style={{ background: "rgba(255,100,80,0.08)", border: "1px solid rgba(255,100,80,0.2)", color: "#ff7060" }}>
                     Только сейчас — дополнительная скидка 10% на профессиональную чистку в течение 15 дней.
                   </div>
                   <p style={{ color: "var(--muted)" }}>💬 Запишитесь на удобное время — ответьте на это сообщение</p>
-                  <p className="text-xs" style={{ color: "var(--muted)", opacity: 0.6 }}>👉 futuresmile-clinic.ru/pamyatka-gigiena</p>
+                  <p className="text-xs" style={{ color: "var(--muted)", opacity: 0.5 }}>👉 futuresmile-clinic.ru/pamyatka-gigiena</p>
                 </div>
-                <div className="px-5 py-4 border-t" style={{ borderColor: "var(--border)", background: "var(--card-header)" }}>
+                <div className="px-5 py-4 border-t" style={{ borderColor: "rgba(255,100,80,0.15)", background: "rgba(255,100,80,0.04)" }}>
                   <div className="flex gap-4 text-xs" style={{ color: "var(--muted)" }}>
                     <span>Вторичные: <strong style={{ color: "#ff6450" }}>40%</strong></span>
                     <span>Лояльные: <strong style={{ color: "#ff6450" }}>60%</strong></span>
@@ -138,8 +138,8 @@ export default function Index() {
           </Reveal>
 
           <Reveal delay={80}>
-            <div className="rounded-2xl p-8 relative overflow-hidden" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
-              <div style={{ position: "absolute", top: 0, right: 0, width: 200, height: 200, background: "radial-gradient(circle at top right, rgba(100,180,255,0.08), transparent 70%)", pointerEvents: "none" }} />
+            <div className="rounded-2xl p-8 relative overflow-hidden" style={{ background: "linear-gradient(135deg, rgba(74,168,255,0.08) 0%, rgba(107,140,255,0.08) 100%)", border: "1.5px solid rgba(74,168,255,0.2)" }}>
+              <div style={{ position: "absolute", top: 0, right: 0, width: 240, height: 240, background: "radial-gradient(circle at top right, rgba(74,168,255,0.12), transparent 70%)", pointerEvents: "none" }} />
               <p className="font-cormorant text-2xl leading-relaxed mb-4" style={{ color: "var(--text)", fontStyle: "italic" }}>
                 «Проблема не в самом предложении, а в формате коммуникации»
               </p>
@@ -169,14 +169,14 @@ export default function Index() {
           <Reveal delay={100}>
             <div className="grid sm:grid-cols-3 gap-4 mb-10">
               {[
-                { emoji: "🎁", label: "15% на профессиональную гигиену", color: "rgba(120,220,140,0.08)", border: "rgba(120,220,140,0.25)", accent: "var(--accent-green)" },
-                { emoji: "🦷", label: "15% на лечение", color: "rgba(100,180,255,0.08)", border: "rgba(100,180,255,0.25)", accent: "#64b4ff" },
-                { emoji: "⭐️", label: "2 000 бонусов на счёт", color: "rgba(255,180,60,0.08)", border: "rgba(255,180,60,0.25)", accent: "#ffb43c" },
+                { emoji: "🎁", label: "15% на профессиональную гигиену", bg: "linear-gradient(145deg, rgba(45,216,130,0.12) 0%, rgba(45,216,130,0.05) 100%)", border: "rgba(45,216,130,0.3)", accent: "var(--accent-green)", tag: "rgba(45,216,130,0.15)" },
+                { emoji: "🦷", label: "15% на лечение", bg: "linear-gradient(145deg, rgba(74,168,255,0.12) 0%, rgba(74,168,255,0.05) 100%)", border: "rgba(74,168,255,0.3)", accent: "var(--accent-blue)", tag: "rgba(74,168,255,0.15)" },
+                { emoji: "⭐️", label: "2 000 бонусов на счёт", bg: "linear-gradient(145deg, rgba(107,140,255,0.12) 0%, rgba(107,140,255,0.05) 100%)", border: "rgba(107,140,255,0.3)", accent: "var(--accent-navy)", tag: "rgba(107,140,255,0.15)" },
               ].map((o, i) => (
-                <div key={i} className="rounded-2xl p-6 flex flex-col items-center text-center gap-3" style={{ background: o.color, border: `1.5px solid ${o.border}` }}>
+                <div key={i} className="rounded-2xl p-6 flex flex-col items-center text-center gap-3" style={{ background: o.bg, border: `1.5px solid ${o.border}` }}>
                   <span style={{ fontSize: "2rem" }}>{o.emoji}</span>
                   <span className="text-sm font-medium leading-snug" style={{ color: "var(--text)" }}>{o.label}</span>
-                  <span className="text-xs px-3 py-1 rounded-full mt-auto" style={{ background: o.color, color: o.accent, border: `1px solid ${o.border}` }}>Предложение</span>
+                  <span className="text-xs px-3 py-1 rounded-full mt-auto font-medium" style={{ background: o.tag, color: o.accent, border: `1px solid ${o.border}` }}>Предложение</span>
                 </div>
               ))}
             </div>
@@ -185,12 +185,12 @@ export default function Index() {
           <Reveal delay={200}>
             <div className="grid sm:grid-cols-3 gap-4">
               {[
-                { num: "1", title: "Выбор вместо давления", text: "Пациент чувствует контроль над решением, а не получает директиву.", color: "var(--accent-green)" },
-                { num: "2", title: "Мгновенное вовлечение", text: "Ответить на кнопку проще, чем обдумывать запись самостоятельно.", color: "#64b4ff" },
-                { num: "3", title: "Меньше нагрузки", text: "Мы убрали необходимость «решать самому» что именно нужно.", color: "#ffb43c" },
+                { num: "1", title: "Выбор вместо давления", text: "Пациент чувствует контроль над решением, а не получает директиву.", color: "var(--accent-green)", glow: "rgba(45,216,130,0.1)" },
+                { num: "2", title: "Мгновенное вовлечение", text: "Ответить на кнопку проще, чем обдумывать запись самостоятельно.", color: "var(--accent-blue)", glow: "rgba(74,168,255,0.1)" },
+                { num: "3", title: "Меньше нагрузки", text: "Мы убрали необходимость «решать самому» что именно нужно.", color: "var(--accent-navy)", glow: "rgba(107,140,255,0.1)" },
               ].map((f, i) => (
-                <div key={i} className="rounded-xl p-5 flex flex-col gap-3" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
-                  <span className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold" style={{ background: f.color + "18", color: f.color }}>{f.num}</span>
+                <div key={i} className="rounded-xl p-5 flex flex-col gap-3" style={{ background: f.glow, border: `1.5px solid ${f.color}30` }}>
+                  <span className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold" style={{ background: f.color + "22", color: f.color }}>{f.num}</span>
                   <div>
                     <div className="font-semibold text-sm mb-1" style={{ color: "var(--text)" }}>{f.title}</div>
                     <div className="text-sm" style={{ color: "var(--muted)" }}>{f.text}</div>
@@ -213,9 +213,9 @@ export default function Index() {
           </Reveal>
 
           <Reveal delay={80}>
-            <div className="rounded-2xl overflow-hidden mb-10" style={{ border: "1px solid var(--border)" }}>
+            <div className="rounded-2xl overflow-hidden mb-10" style={{ border: "1.5px solid rgba(74,168,255,0.2)" }}>
               <div className="grid grid-cols-2">
-                <div className="p-6" style={{ background: "rgba(255,100,80,0.04)", borderRight: "1px solid var(--border)" }}>
+                <div className="p-6" style={{ background: "rgba(255,100,80,0.06)", borderRight: "1px solid rgba(255,100,80,0.15)" }}>
                   <div className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: "#ff6450" }}>До</div>
                   <div className="space-y-3 text-sm" style={{ color: "var(--muted)" }}>
                     <div className="flex items-start gap-2">
@@ -232,7 +232,7 @@ export default function Index() {
                     </div>
                   </div>
                 </div>
-                <div className="p-6" style={{ background: "rgba(120,220,140,0.04)" }}>
+                <div className="p-6" style={{ background: "rgba(45,216,130,0.07)" }}>
                   <div className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: "var(--accent-green)" }}>После</div>
                   <div className="space-y-3 text-sm" style={{ color: "var(--muted)" }}>
                     <div className="flex items-start gap-2">
@@ -250,19 +250,19 @@ export default function Index() {
                   </div>
                 </div>
               </div>
-              <div className="px-6 py-5" style={{ borderTop: "1px solid var(--border)", background: "var(--card)" }}>
+              <div className="px-6 py-5" style={{ borderTop: "1px solid rgba(74,168,255,0.12)", background: "rgba(74,168,255,0.05)" }}>
                 <div className="text-xs mb-3" style={{ color: "var(--muted)" }}>Скорость достижения конверсии 40% / 60%</div>
                 <div className="flex items-center gap-3">
                   <span className="text-xs w-20 text-right" style={{ color: "var(--muted)" }}>Раньше</span>
                   <div className="flex-1 h-2 rounded-full" style={{ background: "var(--bar-bg)" }}>
-                    <div className="h-2 rounded-full" style={{ width: "100%", background: "#ff6450" }} />
+                    <div className="h-2 rounded-full" style={{ width: "100%", background: "linear-gradient(90deg, #ff6450, #ff8070)" }} />
                   </div>
                   <span className="text-xs w-12" style={{ color: "#ff6450" }}>12 мес</span>
                 </div>
                 <div className="flex items-center gap-3 mt-2">
                   <span className="text-xs w-20 text-right" style={{ color: "var(--muted)" }}>Сейчас</span>
                   <div className="flex-1 h-2 rounded-full" style={{ background: "var(--bar-bg)" }}>
-                    <div className="h-2 rounded-full" style={{ width: "50%", background: "var(--accent-green)" }} />
+                    <div className="h-2 rounded-full" style={{ width: "50%", background: "linear-gradient(90deg, var(--accent-green), var(--accent-blue))" }} />
                   </div>
                   <span className="text-xs w-12" style={{ color: "var(--accent-green)" }}>6 мес</span>
                 </div>
@@ -271,12 +271,12 @@ export default function Index() {
           </Reveal>
 
           <Reveal delay={160}>
-            <div className="rounded-2xl p-6 flex items-start gap-5" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
-              <Icon name="TrendingUp" size={32} style={{ color: "#ffb43c", flexShrink: 0, marginTop: 2 }} />
+            <div className="rounded-2xl p-6 flex items-start gap-5" style={{ background: "linear-gradient(135deg, rgba(107,140,255,0.1) 0%, rgba(74,168,255,0.08) 100%)", border: "1.5px solid rgba(107,140,255,0.25)" }}>
+              <Icon name="TrendingUp" size={32} style={{ color: "var(--accent-navy)", flexShrink: 0, marginTop: 2 }} />
               <div>
                 <div className="font-semibold text-base mb-1" style={{ color: "var(--text)" }}>Прогноз на годовом горизонте</div>
                 <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
-                  Наблюдение продолжается. По текущей динамике мы ожидаем рост конверсии ещё на <strong style={{ color: "#ffb43c" }}>30–40%</strong> по сравнению с классическими триггерами.
+                  Наблюдение продолжается. По текущей динамике мы ожидаем рост конверсии ещё на <strong style={{ color: "var(--accent-navy)" }}>30–40%</strong> по сравнению с классическими триггерами.
                 </p>
               </div>
             </div>
@@ -304,11 +304,11 @@ export default function Index() {
           <Reveal delay={140}>
             <div className="grid sm:grid-cols-3 gap-4 mb-12">
               {[
-                { icon: "Zap", text: "Ускорить принятие решения", color: "var(--accent-green)" },
-                { icon: "Users", text: "Повысить вовлечённость", color: "#64b4ff" },
-                { icon: "TrendingUp", text: "Увеличить конверсию без скидочных войн", color: "#ffb43c" },
+                { icon: "Zap", text: "Ускорить принятие решения", color: "var(--accent-green)", glow: "rgba(45,216,130,0.1)" },
+                { icon: "Users", text: "Повысить вовлечённость", color: "var(--accent-blue)", glow: "rgba(74,168,255,0.1)" },
+                { icon: "TrendingUp", text: "Увеличить конверсию без скидочных войн", color: "var(--accent-navy)", glow: "rgba(107,140,255,0.1)" },
               ].map((item, i) => (
-                <div key={i} className="rounded-xl p-5 flex flex-col items-start gap-3" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
+                <div key={i} className="rounded-xl p-5 flex flex-col items-start gap-3" style={{ background: item.glow, border: `1.5px solid ${item.color}35` }}>
                   <Icon name={item.icon} size={20} style={{ color: item.color }} />
                   <span className="text-sm leading-snug" style={{ color: "var(--text)" }}>{item.text}</span>
                 </div>

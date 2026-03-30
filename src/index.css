@@ -5,19 +5,21 @@
 @layer base {
   :root {
     /* Case page tokens */
-    --bg: #eceae3;
-    --text: #1a1a1a;
-    --muted: #7a7a72;
-    --card: #f5f3ee;
-    --card-header: #e8e5de;
-    --border: rgba(0, 0, 0, 0.09);
-    --divider: rgba(0, 0, 0, 0.08);
-    --section-alt: #e2dfd7;
-    --accent-green: #1a7a3c;
-    --tag-bg: rgba(26, 122, 60, 0.07);
-    --tag-border: rgba(26, 122, 60, 0.18);
-    --offer-bg: rgba(0, 0, 0, 0.025);
-    --bar-bg: rgba(0, 0, 0, 0.07);
+    --bg: #0d1b2a;
+    --text: #e8f0f8;
+    --muted: #7a9ab8;
+    --card: #132235;
+    --card-header: #0f1c2d;
+    --border: rgba(100, 180, 255, 0.12);
+    --divider: rgba(100, 180, 255, 0.08);
+    --section-alt: #0f1e30;
+    --accent-green: #2dd882;
+    --accent-blue: #4aa8ff;
+    --accent-navy: #6b8cff;
+    --tag-bg: rgba(45, 216, 130, 0.08);
+    --tag-border: rgba(45, 216, 130, 0.22);
+    --offer-bg: rgba(100, 180, 255, 0.04);
+    --bar-bg: rgba(100, 180, 255, 0.1);
 
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
