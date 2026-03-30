@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Icon from "@/components/ui/icon";
 
 const useInView = (threshold = 0.15) => {
@@ -24,22 +24,6 @@ const Reveal = ({ children, delay = 0, className = "" }: { children: React.React
 };
 
 export default function Index() {
-  const [chosen, setChosen] = useState<number | null>(null);
-  const [step, setStep] = useState<"choose" | "confirm">("choose");
-
-  const handleChoose = (i: number) => {
-    setChosen(i);
-    setTimeout(() => setStep("confirm"), 400);
-  };
-
-  const handleReset = () => { setChosen(null); setStep("choose"); };
-
-  const offers = [
-    { emoji: "🎁", label: "15% на профессиональную гигиену" },
-    { emoji: "🦷", label: "15% на лечение" },
-    { emoji: "⭐️", label: "2 000 бонусов на счёт" },
-  ];
-
   return (
     <div className="min-h-screen font-golos" style={{ background: "var(--bg)", color: "var(--text)" }}>
 
@@ -167,88 +151,54 @@ export default function Index() {
         </div>
       </section>
 
-      {/* ───── ИНТЕРАКТИВНЫЙ ДЕМО-ТРИГГЕР ───── */}
+      {/* ───── НОВЫЙ ФОРМАТ ───── */}
       <section style={{ background: "var(--section-alt)", borderBottom: "1px solid var(--divider)" }}>
         <div className="max-w-4xl mx-auto px-6 py-20">
           <Reveal>
             <div className="flex items-center gap-3 mb-4">
               <span className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "rgba(180,255,180,0.12)", color: "var(--accent-green)" }}>03</span>
-              <h2 className="font-cormorant text-3xl font-semibold" style={{ color: "var(--text)" }}>Новый формат: попробуйте сами</h2>
+              <h2 className="font-cormorant text-3xl font-semibold" style={{ color: "var(--text)" }}>Новый формат</h2>
             </div>
           </Reveal>
           <Reveal delay={60}>
             <p className="text-base mb-10" style={{ color: "var(--muted)" }}>
-              Именно так выглядит интерактивный триггер для пациента. Нажмите на один из вариантов.
+              Интерактивный триггер предлагает пациенту готовые варианты — вместо пустого призыва «позвоните нам».
             </p>
           </Reveal>
 
-          <div className="grid md:grid-cols-2 gap-8 items-start">
-            <Reveal delay={120}>
-              <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid var(--border)", background: "var(--card)" }}>
-                <div className="px-4 py-3 flex items-center gap-2 border-b" style={{ borderColor: "var(--border)", background: "var(--card-header)" }}>
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "rgba(120,220,140,0.15)", color: "var(--accent-green)" }}>FS</div>
+          <Reveal delay={100}>
+            <div className="grid sm:grid-cols-3 gap-4 mb-10">
+              {[
+                { emoji: "🎁", label: "15% на профессиональную гигиену", color: "rgba(120,220,140,0.08)", border: "rgba(120,220,140,0.25)", accent: "var(--accent-green)" },
+                { emoji: "🦷", label: "15% на лечение", color: "rgba(100,180,255,0.08)", border: "rgba(100,180,255,0.25)", accent: "#64b4ff" },
+                { emoji: "⭐️", label: "2 000 бонусов на счёт", color: "rgba(255,180,60,0.08)", border: "rgba(255,180,60,0.25)", accent: "#ffb43c" },
+              ].map((o, i) => (
+                <div key={i} className="rounded-2xl p-6 flex flex-col items-center text-center gap-3" style={{ background: o.color, border: `1.5px solid ${o.border}` }}>
+                  <span style={{ fontSize: "2rem" }}>{o.emoji}</span>
+                  <span className="text-sm font-medium leading-snug" style={{ color: "var(--text)" }}>{o.label}</span>
+                  <span className="text-xs px-3 py-1 rounded-full mt-auto" style={{ background: o.color, color: o.accent, border: `1px solid ${o.border}` }}>Предложение</span>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+
+          <Reveal delay={200}>
+            <div className="grid sm:grid-cols-3 gap-4">
+              {[
+                { num: "1", title: "Выбор вместо давления", text: "Пациент чувствует контроль над решением, а не получает директиву.", color: "var(--accent-green)" },
+                { num: "2", title: "Мгновенное вовлечение", text: "Ответить на кнопку проще, чем обдумывать запись самостоятельно.", color: "#64b4ff" },
+                { num: "3", title: "Меньше нагрузки", text: "Мы убрали необходимость «решать самому» что именно нужно.", color: "#ffb43c" },
+              ].map((f, i) => (
+                <div key={i} className="rounded-xl p-5 flex flex-col gap-3" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
+                  <span className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold" style={{ background: f.color + "18", color: f.color }}>{f.num}</span>
                   <div>
-                    <div className="text-xs font-semibold" style={{ color: "var(--text)" }}>Future Smile</div>
-                    <div className="text-xs" style={{ color: "var(--muted)" }}>Интерактивный триггер</div>
+                    <div className="font-semibold text-sm mb-1" style={{ color: "var(--text)" }}>{f.title}</div>
+                    <div className="text-sm" style={{ color: "var(--muted)" }}>{f.text}</div>
                   </div>
-                  <div className="ml-auto text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(120,220,140,0.12)", color: "var(--accent-green)" }}>Новый формат</div>
                 </div>
-                <div className="p-5 text-sm leading-relaxed" style={{ color: "var(--text)" }}>
-                  <p className="mb-4" style={{ color: "var(--muted)" }}>Здравствуйте, Евгения Сергеевна! Мы подготовили для вас специальное предложение. Выберите, что вам сейчас актуально:</p>
-
-                  {step === "choose" && (
-                    <div className="space-y-2">
-                      {offers.map((o, i) => (
-                        <button key={i} onClick={() => handleChoose(i)}
-                          className="w-full text-left rounded-xl px-4 py-3 text-sm flex items-center gap-3"
-                          style={{
-                            background: chosen === i ? "rgba(120,220,140,0.18)" : "var(--offer-bg)",
-                            border: chosen === i ? "1.5px solid var(--accent-green)" : "1.5px solid var(--border)",
-                            color: "var(--text)",
-                            cursor: "pointer",
-                            transform: chosen === i ? "scale(1.02)" : "scale(1)",
-                            transition: "all 0.2s ease",
-                          }}>
-                          <span style={{ fontSize: "1.2rem" }}>{o.emoji}</span>
-                          <span>{o.label}</span>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-
-                  {step === "confirm" && chosen !== null && (
-                    <div>
-                      <div className="rounded-xl px-4 py-4 mb-4 text-sm" style={{ background: "rgba(120,220,140,0.1)", border: "1.5px solid var(--accent-green)" }}>
-                        <div className="font-semibold mb-1" style={{ color: "var(--accent-green)" }}>Отличный выбор! {offers[chosen].emoji}</div>
-                        <div style={{ color: "var(--muted)" }}>{offers[chosen].label} — мы уже готовим для вас запись. Наш администратор свяжется в ближайшее время.</div>
-                      </div>
-                      <button onClick={handleReset} style={{ color: "var(--muted)", background: "none", border: "none", cursor: "pointer", textDecoration: "underline", fontSize: "0.75rem" }}>
-                        ← Попробовать снова
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </Reveal>
-
-            <Reveal delay={200}>
-              <div className="space-y-4">
-                {[
-                  { num: "1", title: "Выбор вместо давления", text: "Пациент чувствует контроль над решением, а не получает директиву.", color: "var(--accent-green)" },
-                  { num: "2", title: "Мгновенное вовлечение", text: "Ответить на кнопку проще, чем обдумывать запись самостоятельно.", color: "#64b4ff" },
-                  { num: "3", title: "Меньше когнитивной нагрузки", text: "Мы убрали необходимость «решать самому» что именно нужно.", color: "#ffb43c" },
-                ].map((f, i) => (
-                  <div key={i} className="rounded-xl p-5 flex gap-4" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
-                    <span className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold" style={{ background: f.color + "18", color: f.color }}>{f.num}</span>
-                    <div>
-                      <div className="font-semibold text-sm mb-1" style={{ color: "var(--text)" }}>{f.title}</div>
-                      <div className="text-sm" style={{ color: "var(--muted)" }}>{f.text}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Reveal>
-          </div>
+              ))}
+            </div>
+          </Reveal>
         </div>
       </section>
 
@@ -363,20 +313,6 @@ export default function Index() {
                   <span className="text-sm leading-snug" style={{ color: "var(--text)" }}>{item.text}</span>
                 </div>
               ))}
-            </div>
-          </Reveal>
-
-          <Reveal delay={200}>
-            <div className="rounded-2xl p-8 text-center" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
-              <div className="font-cormorant text-2xl font-semibold mb-2" style={{ color: "var(--text)" }}>
-                Хотите внедрить интерактивные триггеры?
-              </div>
-              <p className="text-sm mb-6" style={{ color: "var(--muted)" }}>
-                Обсудим вашу ситуацию и подберём сценарии под вашу клинику
-              </p>
-              <button className="px-8 py-3 rounded-full font-semibold text-sm" style={{ background: "var(--accent-green)", color: "#0a1a0e", cursor: "pointer", border: "none" }}>
-                Связаться с нами
-              </button>
             </div>
           </Reveal>
 
