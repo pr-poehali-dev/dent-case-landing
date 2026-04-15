@@ -102,8 +102,8 @@ export default function Index() {
           <div style={{ display: "inline-block", background: "rgba(255,255,255,0.12)", borderRadius: 20, padding: "5px 16px", fontSize: 12, marginBottom: 22, letterSpacing: 1, fontWeight: 600 }}>
             КЕЙС · СТОМАТОЛОГИЯ
           </div>
-          <h1 style={{ fontSize: "clamp(24px, 4.5vw, 46px)", fontWeight: 800, lineHeight: 1.18, marginBottom: 20, margin: "0 0 20px" }}>
-            Как метод PDSA превратил гипотезы<br />в управляемый рост стоматологии
+          <h1 style={{ fontSize: "clamp(24px, 4.5vw, 46px)", fontWeight: 800, lineHeight: 1.18, marginBottom: 20, margin: "0 0 20px", maxWidth: 700 }}>
+            Как метод PDSA превратил гипотезы в управляемый рост стоматологии
           </h1>
           <p style={{ fontSize: 17, color: "rgba(255,255,255,0.7)", maxWidth: 580, lineHeight: 1.75, margin: "20px 0 0" }}>
             Большинство решений принимались «на ощущениях». Мы внедрили PDSA и сделали улучшения измеримыми.
