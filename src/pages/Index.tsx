@@ -54,13 +54,13 @@ const conversionData = [
 const C = {
   bg: "#f5f8fd",
   card: "#ffffff",
-  navy: "#132d4e",
-  blue: "#1d6fcf",
-  green: "#0ea661",
+  navy: "#0a1e38",
+  blue: "#0a4a9e",
+  green: "#07924f",
   muted: "#6b86a0",
   border: "#e3eaf4",
-  altBg: "#edf3fb",
-  red: "#e03c3c",
+  altBg: "#ddeaf8",
+  red: "#cc2222",
 };
 
 const Tag = ({ text, color }: { text: string; color: string }) => (
@@ -293,15 +293,15 @@ export default function Index() {
           <Reveal delay={60}>
             <div style={{ background: C.card, borderRadius: 16, overflow: "hidden", boxShadow: "0 2px 14px rgba(0,0,0,0.055)", border: `1px solid ${C.border}` }}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
-                <div style={{ padding: "14px 20px", background: C.altBg, fontWeight: 700, fontSize: 13, color: C.muted, textTransform: "uppercase", letterSpacing: 0.5 }}>Показатель</div>
-                <div style={{ padding: "14px 20px", background: "#fff5f5", fontWeight: 700, fontSize: 13, color: C.red, borderLeft: `1px solid ${C.border}` }}>📌 ДО</div>
-                <div style={{ padding: "14px 20px", background: "#f0faf5", fontWeight: 700, fontSize: 13, color: C.green, borderLeft: `1px solid ${C.border}` }}>✅ ПОСЛЕ</div>
+                <div style={{ padding: "14px 20px", background: "#d0dff5", fontWeight: 700, fontSize: 13, color: "#0a1e38", textTransform: "uppercase", letterSpacing: 0.5 }}>Показатель</div>
+                <div style={{ padding: "14px 20px", background: "#fbd4d4", fontWeight: 700, fontSize: 13, color: "#9a1010", borderLeft: `1px solid ${C.border}` }}>📌 ДО</div>
+                <div style={{ padding: "14px 20px", background: "#b8f0d4", fontWeight: 700, fontSize: 13, color: "#065c30", borderLeft: `1px solid ${C.border}` }}>✅ ПОСЛЕ</div>
               </div>
               {beforeRows.map((row, i) => (
                 <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", borderTop: `1px solid ${C.border}` }}>
-                  <div style={{ padding: "13px 20px", fontSize: 14, color: C.muted }}>{row.label}</div>
-                  <div style={{ padding: "13px 20px", fontSize: 14, fontWeight: 600, color: C.navy, borderLeft: `1px solid ${C.border}` }}>{row.value}</div>
-                  <div style={{ padding: "13px 20px", fontSize: 14, fontWeight: 700, color: C.green, borderLeft: `1px solid ${C.border}` }}>{row.after}</div>
+                  <div style={{ padding: "13px 20px", fontSize: 14, color: C.muted, background: i % 2 === 0 ? "#f5f8fd" : "#fff" }}>{row.label}</div>
+                  <div style={{ padding: "13px 20px", fontSize: 14, fontWeight: 700, color: "#9a1010", background: i % 2 === 0 ? "#fde8e8" : "#fef4f4", borderLeft: `1px solid ${C.border}` }}>{row.value}</div>
+                  <div style={{ padding: "13px 20px", fontSize: 14, fontWeight: 700, color: "#065c30", background: i % 2 === 0 ? "#d4f5e4" : "#e8faf2", borderLeft: `1px solid ${C.border}` }}>{row.after}</div>
                 </div>
               ))}
             </div>
