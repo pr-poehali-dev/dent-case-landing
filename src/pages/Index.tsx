@@ -284,12 +284,6 @@ export default function Index() {
             <p style={{ color: C.muted, marginBottom: 26, fontSize: 15 }}>Период: 6 месяцев · Клиника: 4 кресла</p>
           </Reveal>
 
-          <Reveal>
-            <div style={{ borderRadius: 14, overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", marginBottom: 24, border: `1px solid ${C.border}` }}>
-              <img src={before_after_image} alt="До и после" style={{ width: "100%", maxHeight: 300, objectFit: "cover", display: "block" }} />
-            </div>
-          </Reveal>
-
           <Reveal delay={60}>
             <div style={{ background: C.card, borderRadius: 16, overflow: "hidden", boxShadow: "0 2px 14px rgba(0,0,0,0.055)", border: `1px solid ${C.border}` }}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
