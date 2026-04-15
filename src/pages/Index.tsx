@@ -85,11 +85,20 @@ const beforeRows = [
   { label: "Чистая прибыль", value: "325 000 ₽", after: "705 000 ₽" },
 ];
 
+const ResultIcon = ({ type, color }: { type: string; color: string }) => {
+  const s = { width: 28, height: 28, display: "block" };
+  if (type === "revenue") return <svg style={s} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>;
+  if (type === "profit") return <svg style={s} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 0 0 0 4h4a2 2 0 0 1 0 4H8"/><line x1="12" y1="6" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="18"/></svg>;
+  if (type === "conversion") return <svg style={s} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>;
+  if (type === "reviews") return <svg style={s} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>;
+  return null;
+};
+
 const results = [
-  { icon: "📈", label: "Выручка", delta: "+900 000 ₽/мес", sub: "3,2 → 4,1 млн" },
-  { icon: "💰", label: "Прибыль", delta: "+380 000 ₽/мес", sub: "325 → 705 тыс." },
-  { icon: "🔄", label: "Конверсия", delta: "+17 п.п.", sub: "44% → 61%" },
-  { icon: "⭐", label: "Отзывы", delta: "×4", sub: "18 → 72 в мес" },
+  { icon: "revenue", color: C.blue, label: "Выручка", delta: "+900 000 ₽/мес", sub: "3,2 → 4,1 млн" },
+  { icon: "profit", color: C.green, label: "Прибыль", delta: "+380 000 ₽/мес", sub: "325 → 705 тыс." },
+  { icon: "conversion", color: "#7c3aed", label: "Конверсия", delta: "+17 п.п.", sub: "44% → 61%" },
+  { icon: "reviews", color: "#e6940a", label: "Отзывы", delta: "×4", sub: "18 → 72 в мес" },
 ];
 
 export default function Index() {
@@ -288,8 +297,14 @@ export default function Index() {
             <div style={{ background: C.card, borderRadius: 16, overflow: "hidden", boxShadow: "0 2px 14px rgba(0,0,0,0.055)", border: `1px solid ${C.border}` }}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
                 <div style={{ padding: "14px 20px", background: "#d0dff5", fontWeight: 700, fontSize: 13, color: "#0a1e38", textTransform: "uppercase", letterSpacing: 0.5 }}>Показатель</div>
-                <div style={{ padding: "14px 20px", background: "#fbd4d4", fontWeight: 700, fontSize: 13, color: "#9a1010", borderLeft: `1px solid ${C.border}` }}>📌 ДО</div>
-                <div style={{ padding: "14px 20px", background: "#b8f0d4", fontWeight: 700, fontSize: 13, color: "#065c30", borderLeft: `1px solid ${C.border}` }}>✅ ПОСЛЕ</div>
+                <div style={{ padding: "14px 20px", background: "#fbd4d4", fontWeight: 700, fontSize: 13, color: "#9a1010", borderLeft: `1px solid ${C.border}`, display: "flex", alignItems: "center", gap: 6 }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9a1010" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  ДО
+                </div>
+                <div style={{ padding: "14px 20px", background: "#b8f0d4", fontWeight: 700, fontSize: 13, color: "#065c30", borderLeft: `1px solid ${C.border}`, display: "flex", alignItems: "center", gap: 6 }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#065c30" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  ПОСЛЕ
+                </div>
               </div>
               {beforeRows.map((row, i) => (
                 <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", borderTop: `1px solid ${C.border}` }}>
@@ -308,7 +323,7 @@ export default function Index() {
             {results.map((r, i) => (
               <Reveal key={i} delay={i * 60}>
                 <div style={{ background: C.card, borderRadius: 14, padding: "22px 18px", boxShadow: "0 2px 10px rgba(0,0,0,0.055)", textAlign: "center", border: `1px solid ${C.border}` }}>
-                  <div style={{ fontSize: 28, marginBottom: 8 }}>{r.icon}</div>
+                  <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}><ResultIcon type={r.icon} color={r.color} /></div>
                   <div style={{ fontWeight: 700, fontSize: 14, color: C.navy, marginBottom: 4 }}>{r.label}</div>
                   <div style={{ fontSize: 12, color: C.muted, marginBottom: 10 }}>{r.sub}</div>
                   <div style={{ display: "inline-block", background: "#e8faf2", color: "#0a7a42", borderRadius: 20, padding: "4px 12px", fontWeight: 800, fontSize: 14 }}>{r.delta}</div>
@@ -362,7 +377,10 @@ export default function Index() {
               <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 22 }}>Что изменилось управленчески</h2>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: 13, color: C.red, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 12 }}>❌ Раньше</div>
+                  <div style={{ fontWeight: 700, fontSize: 13, color: C.red, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 12, display: "flex", alignItems: "center", gap: 6 }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.red} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    Раньше
+                  </div>
                   {["Гипотезы внедрялись вслепую", "Результат оценивался через 3–6 месяцев", "Непонятно, что именно повлияло на рост"].map((t, i) => (
                     <div key={i} style={{ display: "flex", gap: 8, marginBottom: 8, color: C.muted, fontSize: 14, lineHeight: 1.5 }}>
                       <span>—</span>{t}
@@ -370,7 +388,10 @@ export default function Index() {
                   ))}
                 </div>
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: 13, color: C.green, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 12 }}>✅ Сейчас</div>
+                  <div style={{ fontWeight: 700, fontSize: 13, color: C.green, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 12, display: "flex", alignItems: "center", gap: 6 }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.green} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    Сейчас
+                  </div>
                   {["Ставим цель: например, +10% к повторным", "Внедряем изменение и смотрим графики", "Видим отклонение от цели сразу — неделя/месяц"].map((t, i) => (
                     <div key={i} style={{ display: "flex", gap: 8, marginBottom: 8, color: C.muted, fontSize: 14, lineHeight: 1.5 }}>
                       <span style={{ color: C.green }}>→</span>{t}
@@ -397,8 +418,9 @@ export default function Index() {
               </p>
               <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 14, maxWidth: 560, margin: "0 auto" }}>
                 {["Видим влияние каждого изменения", "Управляем конверсиями", "Прогнозируем выручку", "Масштабируем осознанно"].map((t, i) => (
-                  <div key={i} style={{ background: "rgba(255,255,255,0.1)", borderRadius: 10, padding: "14px 20px", fontSize: 14, fontWeight: 500, width: "calc(50% - 7px)", boxSizing: "border-box" }}>
-                    ✓ {t}
+                  <div key={i} style={{ background: "rgba(255,255,255,0.1)", borderRadius: 10, padding: "14px 20px", fontSize: 14, fontWeight: 500, width: "calc(50% - 7px)", boxSizing: "border-box", display: "flex", alignItems: "center", gap: 8 }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><polyline points="20 6 9 17 4 12"/></svg>
+                    {t}
                   </div>
                 ))}
               </div>
