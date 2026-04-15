@@ -1,7 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import Icon from "@/components/ui/icon";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from "recharts";
 
-const useInView = (threshold = 0.15) => {
+const pdsa_image = "https://cdn.poehali.dev/projects/36488d9f-93b6-44f5-ac99-05e84f17e097/files/5f33199a-ad3a-42bb-a486-47e2dfbff730.jpg";
+const before_after_image = "https://cdn.poehali.dev/projects/36488d9f-93b6-44f5-ac99-05e84f17e097/files/5593215a-985a-43a0-a5fb-18113f2d322c.jpg";
+const analytics_month = "https://cdn.poehali.dev/projects/36488d9f-93b6-44f5-ac99-05e84f17e097/bucket/864ce838-36d9-4b16-ac59-36ab8ccc0075.png";
+const analytics_week = "https://cdn.poehali.dev/projects/36488d9f-93b6-44f5-ac99-05e84f17e097/bucket/04aff41b-99cb-4080-8007-65041f3bb810.png";
+
+const useInView = (threshold = 0.12) => {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
   useEffect(() => {
@@ -14,316 +19,396 @@ const useInView = (threshold = 0.15) => {
   return { ref, inView };
 };
 
-const Reveal = ({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) => {
+const Reveal = ({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) => {
   const { ref, inView } = useInView();
   return (
-    <div ref={ref} className={className} style={{ opacity: inView ? 1 : 0, transform: inView ? "translateY(0)" : "translateY(28px)", transition: `opacity 0.7s ease ${delay}ms, transform 0.7s ease ${delay}ms` }}>
+    <div ref={ref} style={{ opacity: inView ? 1 : 0, transform: inView ? "translateY(0)" : "translateY(24px)", transition: `opacity 0.6s ease ${delay}ms, transform 0.6s ease ${delay}ms` }}>
       {children}
     </div>
   );
 };
 
+const revenueData = [
+  { month: "Янв", revenue: 3200, profit: 325 },
+  { month: "Фев", revenue: 3350, profit: 370 },
+  { month: "Мар", revenue: 3480, profit: 420 },
+  { month: "Апр", revenue: 3600, profit: 470 },
+  { month: "Май", revenue: 3820, profit: 560 },
+  { month: "Июн", revenue: 4100, profit: 705 },
+];
+
+const reviewsData = [
+  { month: "Янв", reviews: 18, patients: 220 },
+  { month: "Фев", reviews: 26, patients: 225 },
+  { month: "Мар", reviews: 38, patients: 228 },
+  { month: "Апр", reviews: 52, patients: 231 },
+  { month: "Май", reviews: 63, patients: 233 },
+  { month: "Июн", reviews: 72, patients: 235 },
+];
+
+const conversionData = [
+  { name: "До", conversion: 44, repeat: 48 },
+  { name: "После", conversion: 61, repeat: 63 },
+];
+
+const C = {
+  bg: "#f5f8fd",
+  card: "#ffffff",
+  navy: "#132d4e",
+  blue: "#1d6fcf",
+  green: "#0ea661",
+  muted: "#6b86a0",
+  border: "#e3eaf4",
+  altBg: "#edf3fb",
+  red: "#e03c3c",
+};
+
+const Tag = ({ text, color }: { text: string; color: string }) => (
+  <span style={{ display: "inline-block", background: `${color}18`, color, border: `1px solid ${color}33`, borderRadius: 6, padding: "2px 10px", fontSize: 12, fontWeight: 700, letterSpacing: 0.5 }}>
+    {text}
+  </span>
+);
+
+const Card = ({ children, style = {} }: { children: React.ReactNode; style?: React.CSSProperties }) => (
+  <div style={{ background: C.card, borderRadius: 16, padding: "28px 32px", boxShadow: "0 2px 14px rgba(0,0,0,0.055)", border: `1px solid ${C.border}`, ...style }}>
+    {children}
+  </div>
+);
+
+const beforeRows = [
+  { label: "Первичные пациенты", value: "220 / мес", after: "235 / мес" },
+  { label: "Конверсия план → продажа", value: "44%", after: "61%" },
+  { label: "Повторные визиты", value: "48%", after: "63%" },
+  { label: "Средний чек", value: "14 500 ₽", after: "16 800 ₽" },
+  { label: "Отзывов в месяц", value: "18", after: "72" },
+  { label: "Общая выручка", value: "3 200 000 ₽", after: "4 100 000 ₽" },
+  { label: "Чистая прибыль", value: "325 000 ₽", after: "705 000 ₽" },
+];
+
+const results = [
+  { icon: "📈", label: "Выручка", delta: "+900 000 ₽/мес", sub: "3,2 → 4,1 млн" },
+  { icon: "💰", label: "Прибыль", delta: "+380 000 ₽/мес", sub: "325 → 705 тыс." },
+  { icon: "🔄", label: "Конверсия", delta: "+17 п.п.", sub: "44% → 61%" },
+  { icon: "⭐", label: "Отзывы", delta: "×4", sub: "18 → 72 в мес" },
+];
+
 export default function Index() {
   return (
-    <div className="min-h-screen font-golos" style={{ background: "var(--bg)", color: "var(--text)" }}>
+    <div style={{ fontFamily: "'Inter', 'Segoe UI', sans-serif", background: C.bg, minHeight: "100vh", color: C.navy }}>
 
-      {/* ───── HERO ───── */}
-      <section className="relative overflow-hidden" style={{ background: "var(--bg)" }}>
-        <div className="absolute inset-0 pointer-events-none">
-          <div style={{ position: "absolute", top: "-10%", right: "-5%", width: 520, height: 520, borderRadius: "50%", background: "radial-gradient(circle, rgba(180,255,220,0.06) 0%, transparent 70%)" }} />
-          <div style={{ position: "absolute", bottom: "5%", left: "-8%", width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(100,180,255,0.05) 0%, transparent 70%)" }} />
-          <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 1, background: "var(--divider)" }} />
-        </div>
-
-        <div className="max-w-4xl mx-auto px-6 pt-20 pb-24 relative">
-          <Reveal>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-8" style={{ background: "var(--tag-bg)", color: "var(--accent-green)", border: "1px solid var(--tag-border)" }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--accent-green)", display: "inline-block" }} />
-              Кейс · Future Care 360
-            </div>
-          </Reveal>
-
-          <Reveal delay={80}>
-            <h1 className="font-cormorant leading-[1.1] mb-6" style={{ fontSize: "clamp(2.4rem, 6vw, 4.2rem)", color: "var(--text)" }}>
-              Как мы ускорили конверсию<br />
-              <em style={{ color: "var(--accent-green)" }}>вторичных и лояльных пациентов</em><br />
-              в два раза
-            </h1>
-          </Reveal>
-
-          <Reveal delay={160}>
-            <p className="text-lg leading-relaxed max-w-2xl" style={{ color: "var(--muted)" }}>
-              С помощью интерактивных триггеров в Future Care 360 мы сократили путь от сообщения до записи с 12 до 6 месяцев — без скидочных войн и ручной работы.
-            </p>
-          </Reveal>
-
-          <Reveal delay={240}>
-            <div className="grid grid-cols-3 gap-4 mt-14 max-w-xl">
-              {[
-                { val: "×2", sub: "вовлечённость пациентов", color: "var(--accent-green)", glow: "rgba(45,216,130,0.12)" },
-                { val: "6 мес", sub: "вместо 12 до конверсии", color: "var(--accent-blue)", glow: "rgba(74,168,255,0.12)" },
-                { val: "+30–40%", sub: "ожидаемый рост за год", color: "var(--accent-navy)", glow: "rgba(107,140,255,0.12)" },
-              ].map((m, i) => (
-                <div key={i} className="rounded-2xl p-4 text-center" style={{ background: m.glow, border: `1.5px solid ${m.color}30` }}>
-                  <div className="font-cormorant font-bold leading-none mb-1" style={{ fontSize: "2rem", color: m.color }}>{m.val}</div>
-                  <div className="text-xs leading-snug" style={{ color: "var(--muted)" }}>{m.sub}</div>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ───── СТАРЫЙ ПОДХОД ───── */}
-      <section style={{ background: "var(--section-alt)", borderTop: "1px solid var(--divider)", borderBottom: "1px solid var(--divider)" }}>
-        <div className="max-w-4xl mx-auto px-6 py-20">
-          <Reveal>
-            <div className="flex items-center gap-3 mb-10">
-              <span className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "rgba(255,100,80,0.12)", color: "#ff6450" }}>01</span>
-              <h2 className="font-cormorant text-3xl font-semibold" style={{ color: "var(--text)" }}>Как было раньше</h2>
-            </div>
-          </Reveal>
-
-          <div className="grid md:grid-cols-2 gap-8 items-start">
-            <Reveal delay={80}>
-              <p className="text-base leading-relaxed mb-6" style={{ color: "var(--muted)" }}>
-                Через Future Care 360 мы выстраивали стандартные триггеры с напоминанием о профилактическом осмотре. Конверсия достигала хороших значений, но <strong style={{ color: "var(--text)" }}>путь занимал до года</strong>.
-              </p>
-              <p className="text-base leading-relaxed" style={{ color: "var(--muted)" }}>
-                Пациенты долго принимали решение и часто откладывали запись. Классические напоминания работали, но не давали нужной <strong style={{ color: "var(--text)" }}>скорости и глубины вовлечения</strong>.
-              </p>
-            </Reveal>
-
-            <Reveal delay={160}>
-              <div className="rounded-2xl overflow-hidden" style={{ border: "1.5px solid rgba(255,100,80,0.25)", background: "var(--card)" }}>
-                <div className="px-4 py-3 flex items-center gap-2 border-b" style={{ borderColor: "rgba(255,100,80,0.15)", background: "rgba(255,100,80,0.06)" }}>
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "rgba(255,100,80,0.15)", color: "#ff6450" }}>FS</div>
-                  <div>
-                    <div className="text-xs font-semibold" style={{ color: "var(--text)" }}>Future Smile</div>
-                    <div className="text-xs" style={{ color: "var(--muted)" }}>Стандартное напоминание</div>
-                  </div>
-                  <div className="ml-auto text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(255,100,80,0.15)", color: "#ff6450" }}>Старый формат</div>
-                </div>
-                <div className="p-5 text-sm leading-relaxed space-y-3" style={{ color: "var(--text)" }}>
-                  <p>Здравствуйте, Евгения Сергеевна!</p>
-                  <p style={{ color: "var(--muted)" }}>Пора немного позаботиться о себе — прошло больше 6 месяцев с последнего осмотра 🦷</p>
-                  <p style={{ color: "var(--muted)" }}>Профилактическая гигиена помогает сохранить зубы и дёсны здоровыми, а улыбку — свежей ✨</p>
-                  <div className="rounded-xl px-4 py-3 text-sm" style={{ background: "rgba(255,100,80,0.08)", border: "1px solid rgba(255,100,80,0.2)", color: "#ff7060" }}>
-                    Только сейчас — дополнительная скидка 10% на профессиональную чистку в течение 15 дней.
-                  </div>
-                  <p style={{ color: "var(--muted)" }}>💬 Запишитесь на удобное время — ответьте на это сообщение</p>
-                  <p className="text-xs" style={{ color: "var(--muted)", opacity: 0.5 }}>👉 futuresmile-clinic.ru/pamyatka-gigiena</p>
-                </div>
-                <div className="px-5 py-4 border-t" style={{ borderColor: "rgba(255,100,80,0.15)", background: "rgba(255,100,80,0.04)" }}>
-                  <div className="flex gap-4 text-xs" style={{ color: "var(--muted)" }}>
-                    <span>Вторичные: <strong style={{ color: "#ff6450" }}>40%</strong></span>
-                    <span>Лояльные: <strong style={{ color: "#ff6450" }}>60%</strong></span>
-                    <span style={{ marginLeft: "auto" }}>⏱ до 12 месяцев</span>
-                  </div>
-                </div>
-              </div>
-            </Reveal>
+      {/* HERO */}
+      <div style={{ background: `linear-gradient(140deg, ${C.navy} 0%, #1a4a80 100%)`, color: "#fff", padding: "72px 24px 64px" }}>
+        <div style={{ maxWidth: 840, margin: "0 auto" }}>
+          <div style={{ display: "inline-block", background: "rgba(255,255,255,0.12)", borderRadius: 20, padding: "5px 16px", fontSize: 12, marginBottom: 22, letterSpacing: 1, fontWeight: 600 }}>
+            КЕЙС · СТОМАТОЛОГИЯ
           </div>
+          <h1 style={{ fontSize: "clamp(24px, 4.5vw, 46px)", fontWeight: 800, lineHeight: 1.18, marginBottom: 20, margin: "0 0 20px" }}>
+            Как метод PDSA превратил гипотезы<br />в управляемый рост стоматологии
+          </h1>
+          <p style={{ fontSize: 17, color: "rgba(255,255,255,0.7)", maxWidth: 580, lineHeight: 1.75, margin: "20px 0 0" }}>
+            Большинство решений принимались «на ощущениях». Мы внедрили PDSA и сделали улучшения измеримыми.
+          </p>
         </div>
-      </section>
+      </div>
 
-      {/* ───── ГИПОТЕЗА ───── */}
-      <section style={{ background: "var(--bg)", borderBottom: "1px solid var(--divider)" }}>
-        <div className="max-w-4xl mx-auto px-6 py-20">
+      <div style={{ maxWidth: 840, margin: "0 auto", padding: "0 24px 80px" }}>
+
+        {/* Проблема */}
+        <section style={{ marginTop: 56 }}>
           <Reveal>
-            <div className="flex items-center gap-3 mb-10">
-              <span className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "rgba(100,180,255,0.12)", color: "#64b4ff" }}>02</span>
-              <h2 className="font-cormorant text-3xl font-semibold" style={{ color: "var(--text)" }}>Гипотеза</h2>
+            <Card style={{ borderLeft: `4px solid ${C.red}` }}>
+              <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 18, color: C.navy }}>Проблема: управление по интуиции</h2>
+              <div style={{ display: "grid", gap: 10 }}>
+                {[
+                  "«Кажется, средний чек вырос» — но цифр нет",
+                  "«Вроде бы пациентов стало больше» — а может, меньше?",
+                  "«Добавили отзывы — значит поток вырастет» — должен, но вырос ли?",
+                ].map((t, i) => (
+                  <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+                    <span style={{ color: C.red, fontWeight: 700, marginTop: 1 }}>—</span>
+                    <span style={{ color: C.muted, fontSize: 15, lineHeight: 1.6 }}>{t}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{ marginTop: 22, padding: "14px 18px", background: "#fff5f5", borderRadius: 10, border: "1px solid #f5caca" }}>
+                <p style={{ margin: 0, fontWeight: 700, color: C.navy }}> «Кажется» — это не стратегия. Нужны данные.</p>
+              </div>
+            </Card>
+          </Reveal>
+        </section>
+
+        {/* Что такое PDSA */}
+        <section style={{ marginTop: 48 }}>
+          <Reveal>
+            <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 6 }}>Что такое PDSA</h2>
+            <p style={{ color: C.muted, marginBottom: 24, fontSize: 15 }}>Простой цикл управляемых экспериментов</p>
+          </Reveal>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: 14 }}>
+            {[
+              { step: "P", title: "Plan", desc: "Ставим гипотезу", color: C.blue },
+              { step: "D", title: "Do", desc: "Внедряем изменение", color: C.green },
+              { step: "S", title: "Study", desc: "Измеряем результат", color: "#e6940a" },
+              { step: "A", title: "Act", desc: "Масштабируем или корректируем", color: "#7c3aed" },
+            ].map((item, i) => (
+              <Reveal key={item.step} delay={i * 80}>
+                <div style={{ background: C.card, borderRadius: 14, padding: "26px 18px", boxShadow: "0 2px 10px rgba(0,0,0,0.055)", textAlign: "center", border: `1px solid ${C.border}`, height: "100%" }}>
+                  <div style={{ width: 50, height: 50, borderRadius: "50%", background: item.color, color: "#fff", fontSize: 22, fontWeight: 900, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px" }}>
+                    {item.step}
+                  </div>
+                  <div style={{ fontWeight: 700, fontSize: 16, color: item.color, marginBottom: 6 }}>{item.title}</div>
+                  <div style={{ fontSize: 13, color: C.muted, lineHeight: 1.5 }}>{item.desc}</div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+          <Reveal delay={120}>
+            <div style={{ marginTop: 24, borderRadius: 16, overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.09)" }}>
+              <img src={pdsa_image} alt="PDSA" style={{ width: "100%", maxHeight: 320, objectFit: "cover", display: "block" }} />
             </div>
+          </Reveal>
+        </section>
+
+        {/* Пример 1 */}
+        <section style={{ marginTop: 60 }}>
+          <Reveal>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 26 }}>
+              <Tag text="ПРИМЕР 1" color={C.blue} />
+              <h2 style={{ fontSize: 22, fontWeight: 800, margin: 0 }}>Гипотеза: увеличим средний чек</h2>
+            </div>
+          </Reveal>
+          <div style={{ display: "grid", gap: 14 }}>
+            {[
+              { tag: "Plan", color: C.blue, title: "Гипотеза", content: "Если увеличим средний чек за счёт комплексных планов лечения — вырастет общая выручка. Главное убедиться, что поток первичных не снизится, конверсия не упадёт." },
+              { tag: "Do", color: C.green, title: "Что сделали", list: ["Усилили презентацию плана лечения", "Добавили структурированную упаковку", "Обучили администраторов проговаривать ценность"] },
+              { tag: "Study", color: "#e6940a", title: "Что измеряли", list: ["Средний чек", "Количество первичных пациентов", "Конверсию «план → продажа»", "Повторные визиты", "Общий доход"] },
+              { tag: "Act", color: "#7c3aed", title: "Решение", content: "Гипотеза подтвердилась: средний чек вырос, поток первичных не упал, конверсия осталась стабильной. Масштабируем на все кресла." },
+            ].map((block, i) => (
+              <Reveal key={block.tag} delay={i * 60}>
+                <div style={{ background: C.card, borderRadius: 14, padding: "22px 26px", boxShadow: "0 2px 10px rgba(0,0,0,0.05)", borderLeft: `4px solid ${block.color}`, border: `1px solid ${C.border}`, borderLeftWidth: 4, borderLeftColor: block.color }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                    <Tag text={block.tag} color={block.color} />
+                    <span style={{ fontWeight: 700, fontSize: 15 }}>{block.title}</span>
+                  </div>
+                  {"content" in block && <p style={{ color: C.muted, lineHeight: 1.7, margin: 0, fontSize: 15 }}>{block.content}</p>}
+                  {"list" in block && (
+                    <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "grid", gap: 6 }}>
+                      {block.list!.map((item, j) => (
+                        <li key={j} style={{ display: "flex", gap: 10, color: C.muted, fontSize: 15 }}>
+                          <span style={{ color: block.color, fontWeight: 700 }}>→</span> {item}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+
+        {/* Скриншоты аналитики */}
+        <section style={{ marginTop: 48 }}>
+          <Reveal>
+            <h3 style={{ fontSize: 17, fontWeight: 700, marginBottom: 6 }}>Так выглядит аналитика в системе</h3>
+            <p style={{ color: C.muted, fontSize: 14, marginBottom: 20 }}>Данные в разрезе месяцев и недель — видно отклонение от цели сразу</p>
+          </Reveal>
+          <div style={{ display: "grid", gap: 18 }}>
+            {[analytics_month, analytics_week].map((src, i) => (
+              <Reveal key={i} delay={i * 100}>
+                <div style={{ borderRadius: 14, overflow: "hidden", boxShadow: "0 4px 24px rgba(0,0,0,0.10)", border: `1px solid ${C.border}` }}>
+                  <img src={src} alt={`Аналитика ${i + 1}`} style={{ width: "100%", display: "block" }} />
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+
+        {/* Пример 2 */}
+        <section style={{ marginTop: 60 }}>
+          <Reveal>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 26 }}>
+              <Tag text="ПРИМЕР 2" color={C.green} />
+              <h2 style={{ fontSize: 22, fontWeight: 800, margin: 0 }}>Как отзывы влияют на поток</h2>
+            </div>
+          </Reveal>
+
+          <Reveal>
+            <Card style={{ marginBottom: 20 }}>
+              <p style={{ fontWeight: 700, fontSize: 15, marginBottom: 10 }}>Гипотеза:</p>
+              <p style={{ color: C.muted, lineHeight: 1.75, fontSize: 15, marginBottom: 20 }}>
+                Если увеличить количество отзывов и рейтинг — вырастет поток первичных пациентов без роста рекламного бюджета.
+              </p>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                {[
+                  "Системный сбор отзывов",
+                  "Follow-up через 2 ч после приёма",
+                  "Мотивация оставлять отзывы на агрегаторах",
+                  "Еженедельный мониторинг рейтинга",
+                ].map((item, i) => (
+                  <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+                    <span style={{ color: C.green, fontWeight: 700 }}>✓</span>
+                    <span style={{ color: C.muted, fontSize: 14, lineHeight: 1.5 }}>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </Card>
           </Reveal>
 
           <Reveal delay={80}>
-            <div className="rounded-2xl p-8 relative overflow-hidden" style={{ background: "linear-gradient(135deg, rgba(74,168,255,0.08) 0%, rgba(107,140,255,0.08) 100%)", border: "1.5px solid rgba(74,168,255,0.2)" }}>
-              <div style={{ position: "absolute", top: 0, right: 0, width: 240, height: 240, background: "radial-gradient(circle at top right, rgba(74,168,255,0.12), transparent 70%)", pointerEvents: "none" }} />
-              <p className="font-cormorant text-2xl leading-relaxed mb-4" style={{ color: "var(--text)", fontStyle: "italic" }}>
-                «Проблема не в самом предложении, а в формате коммуникации»
-              </p>
-              <p className="text-base leading-relaxed" style={{ color: "var(--muted)" }}>
-                Если дать пациенту <strong style={{ color: "var(--accent-green)" }}>выбор</strong> и вовлечь его в диалог — решение будет приниматься быстрее. Пассивное чтение уступает место активному действию.
-              </p>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ───── НОВЫЙ ФОРМАТ ───── */}
-      <section style={{ background: "var(--section-alt)", borderBottom: "1px solid var(--divider)" }}>
-        <div className="max-w-4xl mx-auto px-6 py-20">
-          <Reveal>
-            <div className="flex items-center gap-3 mb-4">
-              <span className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "rgba(180,255,180,0.12)", color: "var(--accent-green)" }}>03</span>
-              <h2 className="font-cormorant text-3xl font-semibold" style={{ color: "var(--text)" }}>Новый формат</h2>
-            </div>
-          </Reveal>
-          <Reveal delay={60}>
-            <p className="text-base mb-10" style={{ color: "var(--muted)" }}>
-              Интерактивный триггер предлагает пациенту готовые варианты — вместо пустого призыва «позвоните нам».
-            </p>
-          </Reveal>
-
-          <Reveal delay={100}>
-            <div className="grid sm:grid-cols-3 gap-4 mb-10">
-              {[
-                { emoji: "🎁", label: "15% на профессиональную гигиену", bg: "linear-gradient(145deg, rgba(45,216,130,0.12) 0%, rgba(45,216,130,0.05) 100%)", border: "rgba(45,216,130,0.3)", accent: "var(--accent-green)", tag: "rgba(45,216,130,0.15)" },
-                { emoji: "🦷", label: "15% на лечение", bg: "linear-gradient(145deg, rgba(74,168,255,0.12) 0%, rgba(74,168,255,0.05) 100%)", border: "rgba(74,168,255,0.3)", accent: "var(--accent-blue)", tag: "rgba(74,168,255,0.15)" },
-                { emoji: "⭐️", label: "2 000 бонусов на счёт", bg: "linear-gradient(145deg, rgba(107,140,255,0.12) 0%, rgba(107,140,255,0.05) 100%)", border: "rgba(107,140,255,0.3)", accent: "var(--accent-navy)", tag: "rgba(107,140,255,0.15)" },
-              ].map((o, i) => (
-                <div key={i} className="rounded-2xl p-6 flex flex-col items-center text-center gap-3" style={{ background: o.bg, border: `1.5px solid ${o.border}` }}>
-                  <span style={{ fontSize: "2rem" }}>{o.emoji}</span>
-                  <span className="text-sm font-medium leading-snug" style={{ color: "var(--text)" }}>{o.label}</span>
-                  <span className="text-xs px-3 py-1 rounded-full mt-auto font-medium" style={{ background: o.tag, color: o.accent, border: `1px solid ${o.border}` }}>Предложение</span>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-
-          <Reveal delay={200}>
-            <div className="grid sm:grid-cols-3 gap-4">
-              {[
-                { num: "1", title: "Выбор вместо давления", text: "Пациент чувствует контроль над решением, а не получает директиву.", color: "var(--accent-green)", glow: "rgba(45,216,130,0.1)" },
-                { num: "2", title: "Мгновенное вовлечение", text: "Ответить на кнопку проще, чем обдумывать запись самостоятельно.", color: "var(--accent-blue)", glow: "rgba(74,168,255,0.1)" },
-                { num: "3", title: "Меньше нагрузки", text: "Мы убрали необходимость «решать самому» что именно нужно.", color: "var(--accent-navy)", glow: "rgba(107,140,255,0.1)" },
-              ].map((f, i) => (
-                <div key={i} className="rounded-xl p-5 flex flex-col gap-3" style={{ background: f.glow, border: `1.5px solid ${f.color}30` }}>
-                  <span className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold" style={{ background: f.color + "22", color: f.color }}>{f.num}</span>
-                  <div>
-                    <div className="font-semibold text-sm mb-1" style={{ color: "var(--text)" }}>{f.title}</div>
-                    <div className="text-sm" style={{ color: "var(--muted)" }}>{f.text}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ───── РЕЗУЛЬТАТЫ ───── */}
-      <section style={{ background: "var(--bg)", borderBottom: "1px solid var(--divider)" }}>
-        <div className="max-w-4xl mx-auto px-6 py-20">
-          <Reveal>
-            <div className="flex items-center gap-3 mb-10">
-              <span className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "rgba(255,180,60,0.12)", color: "#ffb43c" }}>04</span>
-              <h2 className="font-cormorant text-3xl font-semibold" style={{ color: "var(--text)" }}>Результаты</h2>
-            </div>
-          </Reveal>
-
-          <Reveal delay={80}>
-            <div className="rounded-2xl overflow-hidden mb-10" style={{ border: "1.5px solid rgba(74,168,255,0.2)" }}>
-              <div className="grid grid-cols-2">
-                <div className="p-6" style={{ background: "rgba(255,100,80,0.06)", borderRight: "1px solid rgba(255,100,80,0.15)" }}>
-                  <div className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: "#ff6450" }}>До</div>
-                  <div className="space-y-3 text-sm" style={{ color: "var(--muted)" }}>
-                    <div className="flex items-start gap-2">
-                      <Icon name="Clock" size={14} style={{ color: "#ff6450", marginTop: 2, flexShrink: 0 }} />
-                      <span>Конверсия 40/60% достигалась за <strong style={{ color: "var(--text)" }}>12 месяцев</strong></span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <Icon name="TrendingDown" size={14} style={{ color: "#ff6450", marginTop: 2, flexShrink: 0 }} />
-                      <span>Медленное принятие решений</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <Icon name="MessageSquare" size={14} style={{ color: "#ff6450", marginTop: 2, flexShrink: 0 }} />
-                      <span>Пассивная коммуникация</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-6" style={{ background: "rgba(45,216,130,0.07)" }}>
-                  <div className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: "var(--accent-green)" }}>После</div>
-                  <div className="space-y-3 text-sm" style={{ color: "var(--muted)" }}>
-                    <div className="flex items-start gap-2">
-                      <Icon name="Zap" size={14} style={{ color: "var(--accent-green)", marginTop: 2, flexShrink: 0 }} />
-                      <span>Та же конверсия за <strong style={{ color: "var(--text)" }}>6 месяцев</strong></span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <Icon name="TrendingUp" size={14} style={{ color: "var(--accent-green)", marginTop: 2, flexShrink: 0 }} />
-                      <span>Вовлечённость выросла в <strong style={{ color: "var(--text)" }}>2 раза</strong></span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <Icon name="MousePointerClick" size={14} style={{ color: "var(--accent-green)", marginTop: 2, flexShrink: 0 }} />
-                      <span>Пациент сам инициирует диалог</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="px-6 py-5" style={{ borderTop: "1px solid rgba(74,168,255,0.12)", background: "rgba(74,168,255,0.05)" }}>
-                <div className="text-xs mb-3" style={{ color: "var(--muted)" }}>Скорость достижения конверсии 40% / 60%</div>
-                <div className="flex items-center gap-3">
-                  <span className="text-xs w-20 text-right" style={{ color: "var(--muted)" }}>Раньше</span>
-                  <div className="flex-1 h-2 rounded-full" style={{ background: "var(--bar-bg)" }}>
-                    <div className="h-2 rounded-full" style={{ width: "100%", background: "linear-gradient(90deg, #ff6450, #ff8070)" }} />
-                  </div>
-                  <span className="text-xs w-12" style={{ color: "#ff6450" }}>12 мес</span>
-                </div>
-                <div className="flex items-center gap-3 mt-2">
-                  <span className="text-xs w-20 text-right" style={{ color: "var(--muted)" }}>Сейчас</span>
-                  <div className="flex-1 h-2 rounded-full" style={{ background: "var(--bar-bg)" }}>
-                    <div className="h-2 rounded-full" style={{ width: "50%", background: "linear-gradient(90deg, var(--accent-green), var(--accent-blue))" }} />
-                  </div>
-                  <span className="text-xs w-12" style={{ color: "var(--accent-green)" }}>6 мес</span>
-                </div>
-              </div>
-            </div>
-          </Reveal>
-
-          <Reveal delay={160}>
-            <div className="rounded-2xl p-6 flex items-start gap-5" style={{ background: "linear-gradient(135deg, rgba(107,140,255,0.1) 0%, rgba(74,168,255,0.08) 100%)", border: "1.5px solid rgba(107,140,255,0.25)" }}>
-              <Icon name="TrendingUp" size={32} style={{ color: "var(--accent-navy)", flexShrink: 0, marginTop: 2 }} />
-              <div>
-                <div className="font-semibold text-base mb-1" style={{ color: "var(--text)" }}>Прогноз на годовом горизонте</div>
-                <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
-                  Наблюдение продолжается. По текущей динамике мы ожидаем рост конверсии ещё на <strong style={{ color: "var(--accent-navy)" }}>30–40%</strong> по сравнению с классическими триггерами.
+            <Card>
+              <h4 style={{ fontSize: 13, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 20 }}>Динамика за 6 месяцев</h4>
+              <ResponsiveContainer width="100%" height={230}>
+                <LineChart data={reviewsData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f4f8" />
+                  <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+                  <YAxis yAxisId="left" tick={{ fontSize: 12 }} />
+                  <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 12 }} />
+                  <Tooltip />
+                  <Legend />
+                  <Line yAxisId="right" type="monotone" dataKey="patients" stroke={C.blue} strokeWidth={2.5} dot={{ r: 4 }} name="Первичные пациенты" />
+                  <Line yAxisId="left" type="monotone" dataKey="reviews" stroke={C.green} strokeWidth={2.5} dot={{ r: 4 }} name="Отзывов в месяц" />
+                </LineChart>
+              </ResponsiveContainer>
+              <div style={{ marginTop: 16, padding: "12px 16px", background: "#f0faf5", borderRadius: 10, border: "1px solid #c0e8d4" }}>
+                <p style={{ margin: 0, color: "#0a7a42", fontWeight: 600, fontSize: 14 }}>
+                  Это не предположение. Это корреляция, подтверждённая цифрами.
                 </p>
               </div>
-            </div>
+            </Card>
           </Reveal>
-        </div>
-      </section>
+        </section>
 
-      {/* ───── ВЫВОД ───── */}
-      <section style={{ background: "var(--section-alt)" }}>
-        <div className="max-w-4xl mx-auto px-6 py-20">
+        {/* До и После — таблица */}
+        <section style={{ marginTop: 60 }}>
           <Reveal>
-            <div className="flex items-center gap-3 mb-10">
-              <span className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: "rgba(120,220,140,0.12)", color: "var(--accent-green)" }}>05</span>
-              <h2 className="font-cormorant text-3xl font-semibold" style={{ color: "var(--text)" }}>Вывод</h2>
+            <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 6 }}>Конкретный результат: до и после</h2>
+            <p style={{ color: C.muted, marginBottom: 26, fontSize: 15 }}>Период: 6 месяцев · Клиника: 4 кресла</p>
+          </Reveal>
+
+          <Reveal>
+            <div style={{ borderRadius: 14, overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", marginBottom: 24, border: `1px solid ${C.border}` }}>
+              <img src={before_after_image} alt="До и после" style={{ width: "100%", maxHeight: 300, objectFit: "cover", display: "block" }} />
             </div>
           </Reveal>
 
-          <Reveal delay={80}>
-            <p className="font-cormorant text-2xl leading-relaxed mb-8" style={{ color: "var(--text)", fontStyle: "italic" }}>
-              «Вторичные и лояльные пациенты — это не просто база, а аудитория, с которой важно{" "}
-              <em style={{ color: "var(--accent-green)" }}>разговаривать</em>, а не рассылать напоминания»
-            </p>
-          </Reveal>
-
-          <Reveal delay={140}>
-            <div className="grid sm:grid-cols-3 gap-4 mb-12">
-              {[
-                { icon: "Zap", text: "Ускорить принятие решения", color: "var(--accent-green)", glow: "rgba(45,216,130,0.1)" },
-                { icon: "Users", text: "Повысить вовлечённость", color: "var(--accent-blue)", glow: "rgba(74,168,255,0.1)" },
-                { icon: "TrendingUp", text: "Увеличить конверсию без скидочных войн", color: "var(--accent-navy)", glow: "rgba(107,140,255,0.1)" },
-              ].map((item, i) => (
-                <div key={i} className="rounded-xl p-5 flex flex-col items-start gap-3" style={{ background: item.glow, border: `1.5px solid ${item.color}35` }}>
-                  <Icon name={item.icon} size={20} style={{ color: item.color }} />
-                  <span className="text-sm leading-snug" style={{ color: "var(--text)" }}>{item.text}</span>
+          <Reveal delay={60}>
+            <div style={{ background: C.card, borderRadius: 16, overflow: "hidden", boxShadow: "0 2px 14px rgba(0,0,0,0.055)", border: `1px solid ${C.border}` }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
+                <div style={{ padding: "14px 20px", background: C.altBg, fontWeight: 700, fontSize: 13, color: C.muted, textTransform: "uppercase", letterSpacing: 0.5 }}>Показатель</div>
+                <div style={{ padding: "14px 20px", background: "#fff5f5", fontWeight: 700, fontSize: 13, color: C.red, borderLeft: `1px solid ${C.border}` }}>📌 ДО</div>
+                <div style={{ padding: "14px 20px", background: "#f0faf5", fontWeight: 700, fontSize: 13, color: C.green, borderLeft: `1px solid ${C.border}` }}>✅ ПОСЛЕ</div>
+              </div>
+              {beforeRows.map((row, i) => (
+                <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", borderTop: `1px solid ${C.border}` }}>
+                  <div style={{ padding: "13px 20px", fontSize: 14, color: C.muted }}>{row.label}</div>
+                  <div style={{ padding: "13px 20px", fontSize: 14, fontWeight: 600, color: C.navy, borderLeft: `1px solid ${C.border}` }}>{row.value}</div>
+                  <div style={{ padding: "13px 20px", fontSize: 14, fontWeight: 700, color: C.green, borderLeft: `1px solid ${C.border}` }}>{row.after}</div>
                 </div>
               ))}
             </div>
           </Reveal>
+        </section>
 
-          <Reveal delay={260}>
-            <div className="mt-14 pt-8 flex items-center justify-between" style={{ borderTop: "1px solid var(--divider)" }}>
-              <div className="font-cormorant text-lg font-semibold" style={{ color: "var(--text)" }}>Future Care 360</div>
-              <div className="text-xs" style={{ color: "var(--muted)" }}>futuresmile-clinic.ru</div>
+        {/* Карточки результатов */}
+        <section style={{ marginTop: 32 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: 14 }}>
+            {results.map((r, i) => (
+              <Reveal key={i} delay={i * 60}>
+                <div style={{ background: C.card, borderRadius: 14, padding: "22px 18px", boxShadow: "0 2px 10px rgba(0,0,0,0.055)", textAlign: "center", border: `1px solid ${C.border}` }}>
+                  <div style={{ fontSize: 28, marginBottom: 8 }}>{r.icon}</div>
+                  <div style={{ fontWeight: 700, fontSize: 14, color: C.navy, marginBottom: 4 }}>{r.label}</div>
+                  <div style={{ fontSize: 12, color: C.muted, marginBottom: 10 }}>{r.sub}</div>
+                  <div style={{ display: "inline-block", background: "#e8faf2", color: "#0a7a42", borderRadius: 20, padding: "4px 12px", fontWeight: 800, fontSize: 14 }}>{r.delta}</div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+
+        {/* Графики */}
+        <section style={{ marginTop: 32 }}>
+          <Reveal>
+            <Card style={{ marginBottom: 16 }}>
+              <h4 style={{ fontSize: 13, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 20 }}>Динамика выручки и прибыли (тыс. ₽)</h4>
+              <ResponsiveContainer width="100%" height={240}>
+                <BarChart data={revenueData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f4f8" />
+                  <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+                  <YAxis tick={{ fontSize: 12 }} />
+                  <Tooltip formatter={(v: number) => `${v.toLocaleString()} тыс. ₽`} />
+                  <Legend />
+                  <Bar dataKey="revenue" fill={C.blue} name="Выручка" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="profit" fill={C.green} name="Прибыль" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </Card>
+          </Reveal>
+
+          <Reveal delay={60}>
+            <Card>
+              <h4 style={{ fontSize: 13, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 20 }}>Конверсия и повторные визиты: до vs после (%)</h4>
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={conversionData} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f4f8" />
+                  <XAxis type="number" domain={[0, 80]} tick={{ fontSize: 12 }} unit="%" />
+                  <YAxis type="category" dataKey="name" tick={{ fontSize: 12 }} width={50} />
+                  <Tooltip formatter={(v: number) => `${v}%`} />
+                  <Legend />
+                  <Bar dataKey="conversion" fill={C.blue} name="Конверсия план→продажа" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="repeat" fill={C.green} name="Повторные визиты" radius={[0, 4, 4, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </Card>
+          </Reveal>
+        </section>
+
+        {/* Управленческий сдвиг */}
+        <section style={{ marginTop: 48 }}>
+          <Reveal>
+            <Card>
+              <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 22 }}>Что изменилось управленчески</h2>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 13, color: C.red, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 12 }}>❌ Раньше</div>
+                  {["Гипотезы внедрялись вслепую", "Результат оценивался через 3–6 месяцев", "Непонятно, что именно повлияло на рост"].map((t, i) => (
+                    <div key={i} style={{ display: "flex", gap: 8, marginBottom: 8, color: C.muted, fontSize: 14, lineHeight: 1.5 }}>
+                      <span>—</span>{t}
+                    </div>
+                  ))}
+                </div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 13, color: C.green, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 12 }}>✅ Сейчас</div>
+                  {["Ставим цель: например, +10% к повторным", "Внедряем изменение и смотрим графики", "Видим отклонение от цели сразу — неделя/месяц"].map((t, i) => (
+                    <div key={i} style={{ display: "flex", gap: 8, marginBottom: 8, color: C.muted, fontSize: 14, lineHeight: 1.5 }}>
+                      <span style={{ color: C.green }}>→</span>{t}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Card>
+          </Reveal>
+        </section>
+
+        {/* Финальный вывод */}
+        <section style={{ marginTop: 48 }}>
+          <Reveal>
+            <div style={{ background: `linear-gradient(140deg, ${C.navy} 0%, #1a4a80 100%)`, borderRadius: 20, padding: "48px 40px", color: "#fff", textAlign: "center" }}>
+              <div style={{ fontSize: 38, marginBottom: 14 }}>🚀</div>
+              <h2 style={{ fontSize: 28, fontWeight: 800, marginBottom: 14 }}>Рост — это не случайность</h2>
+              <p style={{ fontSize: 16, color: "rgba(255,255,255,0.72)", maxWidth: 520, margin: "0 auto 32px", lineHeight: 1.8 }}>
+                Рост — это последовательность гипотез, проверенных цифрами. Метод PDSA позволил видеть влияние каждого изменения и управлять клиникой осознанно.
+              </p>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: 14, maxWidth: 620, margin: "0 auto" }}>
+                {["Видим влияние каждого изменения", "Управляем конверсиями", "Прогнозируем выручку", "Масштабируем осознанно"].map((t, i) => (
+                  <div key={i} style={{ background: "rgba(255,255,255,0.1)", borderRadius: 10, padding: "14px 16px", fontSize: 14, fontWeight: 500 }}>
+                    ✓ {t}
+                  </div>
+                ))}
+              </div>
             </div>
           </Reveal>
-        </div>
-      </section>
+        </section>
+
+      </div>
     </div>
   );
 }
