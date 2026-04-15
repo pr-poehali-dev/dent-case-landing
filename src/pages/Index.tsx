@@ -386,14 +386,18 @@ export default function Index() {
         <section style={{ marginTop: 48 }}>
           <Reveal>
             <div style={{ background: `linear-gradient(140deg, ${C.navy} 0%, #1a4a80 100%)`, borderRadius: 20, padding: "48px 40px", color: "#fff", textAlign: "center" }}>
-              <div style={{ fontSize: 38, marginBottom: 14 }}>🚀</div>
+              <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
+                <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+                </svg>
+              </div>
               <h2 style={{ fontSize: 28, fontWeight: 800, marginBottom: 14 }}>Рост — это не случайность</h2>
               <p style={{ fontSize: 16, color: "rgba(255,255,255,0.72)", maxWidth: 520, margin: "0 auto 32px", lineHeight: 1.8 }}>
                 Рост — это последовательность гипотез, проверенных цифрами. Метод PDSA позволил видеть влияние каждого изменения и управлять клиникой осознанно.
               </p>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: 14, maxWidth: 620, margin: "0 auto" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 14, maxWidth: 560, margin: "0 auto" }}>
                 {["Видим влияние каждого изменения", "Управляем конверсиями", "Прогнозируем выручку", "Масштабируем осознанно"].map((t, i) => (
-                  <div key={i} style={{ background: "rgba(255,255,255,0.1)", borderRadius: 10, padding: "14px 16px", fontSize: 14, fontWeight: 500 }}>
+                  <div key={i} style={{ background: "rgba(255,255,255,0.1)", borderRadius: 10, padding: "14px 20px", fontSize: 14, fontWeight: 500, width: "calc(50% - 7px)", boxSizing: "border-box" }}>
                     ✓ {t}
                   </div>
                 ))}
