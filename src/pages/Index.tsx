@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from "recharts";
 
 const img_payments_month = "https://cdn.poehali.dev/projects/36488d9f-93b6-44f5-ac99-05e84f17e097/bucket/32c8422a-0e60-4488-95b4-6beeb3f4e81f.jpeg";
 const img_payments_week = "https://cdn.poehali.dev/projects/36488d9f-93b6-44f5-ac99-05e84f17e097/bucket/2ddfa63c-cb74-4b67-bfa2-8e54f8a78a28.jpeg";
@@ -69,17 +68,6 @@ const ArrowIcon = ({ color = "currentColor", size = 14 }: { color?: string; size
   </svg>
 );
 
-const revenueData = [
-  { month: "До", revenue: 5124, profit: 1733 },
-  { month: "После", revenue: 7766, profit: 3356 },
-];
-
-const dynamicsData = [
-  { month: "Фев", primary: 130, repeat: 55 },
-  { month: "Мар", primary: 142, repeat: 58 },
-  { month: "Апр", primary: 158, repeat: 62 },
-  { month: "Май", primary: 164, repeat: 65 },
-];
 
 const beforeRows = [
   { label: "Первичные приёмы", before: "130 / мес", after: "164 / мес", change: "+26,2%" },
@@ -356,42 +344,7 @@ export default function Index() {
           </Reveal>
         </section>
 
-        {/* Графики */}
-        <section style={{ marginTop: 32 }}>
-          <Reveal>
-            <Card style={{ marginBottom: 16 }}>
-              <h4 style={{ fontSize: 12, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 20 }}>Выручка и прибыль: до vs после (тыс. ₽)</h4>
-              <ResponsiveContainer width="100%" height={220}>
-                <BarChart data={revenueData} barCategoryGap="35%">
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f4f8" />
-                  <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                  <YAxis tick={{ fontSize: 12 }} unit=" т" />
-                  <Tooltip formatter={(v: number) => `${v.toLocaleString()} тыс. ₽`} />
-                  <Legend />
-                  <Bar dataKey="revenue" fill={C.blue} name="Выручка" radius={[6, 6, 0, 0]} />
-                  <Bar dataKey="profit" fill={C.green} name="Прибыль" radius={[6, 6, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </Card>
-          </Reveal>
 
-          <Reveal delay={60}>
-            <Card>
-              <h4 style={{ fontSize: 12, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 20 }}>Динамика первичных приёмов за 3 месяца</h4>
-              <ResponsiveContainer width="100%" height={220}>
-                <LineChart data={dynamicsData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f4f8" />
-                  <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                  <YAxis tick={{ fontSize: 12 }} />
-                  <Tooltip />
-                  <Legend />
-                  <Line type="monotone" dataKey="primary" stroke={C.blue} strokeWidth={2.5} dot={{ r: 5 }} name="Первичные приёмы" />
-                  <Line type="monotone" dataKey="repeat" stroke={C.green} strokeWidth={2.5} dot={{ r: 5 }} name="Повторные (%)" />
-                </LineChart>
-              </ResponsiveContainer>
-            </Card>
-          </Reveal>
-        </section>
 
         {/* Вывод */}
         <section style={{ marginTop: 48 }}>
